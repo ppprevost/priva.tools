@@ -44,7 +44,7 @@ export default function DownloadButton({ blob, filename }: Readonly<DownloadButt
   };
 
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const shareText = 'Check out this free tool on PrivaTools';
+  const shareText = 'Check out this free tool on Priva.TOOLS';
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(pageUrl);

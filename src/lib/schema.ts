@@ -37,7 +37,7 @@ export function buildArticleSchema(input: ArticleSchemaInput) {
     "dateModified": input.dateModified ?? input.datePublished,
     "publisher": {
       "@type": "Organization",
-      "name": "PrivaTools",
+      "name": "Priva.TOOLS",
       "url": "https://privatools.com",
     },
   };

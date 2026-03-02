@@ -2,6 +2,7 @@
 import { ShieldCheck } from 'lucide-react';
 
 const showBlog = !!process.env.DATABASE_URL;
+const showSupport = !!process.env.PAYPAL_LINK;
 ---
 
 <footer class="border-t-[3px] border-slate-900 bg-white mt-24">
@@ -32,6 +33,7 @@ const showBlog = !!process.env.DATABASE_URL;
           <li><a href="/about" class="hover:text-indigo-600 transition-colors">About</a></li>
           {showBlog && <li><a href="/blog" class="hover:text-indigo-600 transition-colors">Blog</a></li>}
           <li><a href="/privacy" class="hover:text-indigo-600 transition-colors">Privacy</a></li>
+          {showSupport && <li><a href="/support" class="hover:text-indigo-600 transition-colors">Support</a></li>}
           <li><a href="/contact" class="hover:text-indigo-600 transition-colors">Contact</a></li>
         </ul>
       </div>
@@ -47,7 +49,7 @@ const showBlog = !!process.env.DATABASE_URL;
         <div class="w-7 h-7 bg-indigo-500 rounded-lg border-2 border-slate-900 flex items-center justify-center">
           <span class="text-white font-black text-xs">P</span>
         </div>
-        <span class="font-black text-slate-900">PrivaTools</span>
+        <span class="font-black text-slate-900">Priva.TOOLS</span>
       </div>
       <p class="text-sm text-slate-400">Free online PDF & image tools. 100% client-side processing.</p>
     </div>
