@@ -23,6 +23,20 @@ function isRateLimited(ip: string): boolean {
   return entry.count > RATE_LIMIT_MAX;
 }
 
+async function verifyTurnstile(token: string): Promise<boolean> {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  if (!secret) return false;
+
+  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ secret, response: token }),
+  });
+
+  const data = await res.json() as { success: boolean };
+  return data.success;
+}
+
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   const dbGuard = requireDatabaseUrl();
   if (dbGuard) return dbGuard;
@@ -37,7 +51,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   try {
     const body = await request.json();
-    const { name, email, message } = body;
+    const { name, email, message, turnstileToken } = body;
+
+    if (!turnstileToken || !(await verifyTurnstile(turnstileToken))) {
+      return jsonError('Captcha verification failed.', 403);
+    }
 
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return jsonError('All fields are required.');

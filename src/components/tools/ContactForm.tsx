@@ -1,26 +1,77 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Send, CheckCircle, AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 type FormState = 'idle' | 'sending' | 'success' | 'error';
 
-export default function ContactForm() {
+interface Props {
+  turnstileSiteKey: string;
+}
+
+export default function ContactForm({ turnstileSiteKey }: Readonly<Props>) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [state, setState] = useState<FormState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!turnstileRef.current) return;
+
+    const renderWidget = () => {
+      if (turnstileWidgetIdRef.current !== null) return;
+      const w = window as unknown as { turnstile?: { render: (el: HTMLElement, opts: Record<string, unknown>) => string } };
+      if (!w.turnstile) return;
+      turnstileWidgetIdRef.current = w.turnstile.render(turnstileRef.current, {
+        sitekey: turnstileSiteKey,
+        theme: 'light',
+      });
+    };
+
+    if ((window as unknown as { turnstile?: unknown }).turnstile) {
+      renderWidget();
+    } else {
+      const interval = setInterval(() => {
+        if ((window as unknown as { turnstile?: unknown }).turnstile) {
+          clearInterval(interval);
+          renderWidget();
+        }
+      }, 200);
+      return () => clearInterval(interval);
+    }
+  }, [turnstileSiteKey]);
+
+  const getTurnstileToken = (): string | null => {
+    const input = turnstileRef.current?.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]');
+    return input?.value || null;
+  };
+
+  const resetTurnstile = () => {
+    const w = window as unknown as { turnstile?: { reset: (id: string) => void } };
+    if (w.turnstile && turnstileWidgetIdRef.current !== null) {
+      w.turnstile.reset(turnstileWidgetIdRef.current);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setState('sending');
     setErrorMsg('');
 
+    const turnstileToken = getTurnstileToken();
+    if (!turnstileToken) {
+      setState('error');
+      setErrorMsg('Please complete the captcha verification.');
+      return;
+    }
+
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, message, turnstileToken }),
       });
 
       const data = await res.json();
@@ -28,6 +79,7 @@ export default function ContactForm() {
       if (!res.ok) {
         setState('error');
         setErrorMsg(data.error || 'Something went wrong.');
+        resetTurnstile();
         return;
       }
 
@@ -38,6 +90,7 @@ export default function ContactForm() {
     } catch {
       setState('error');
       setErrorMsg('Network error. Please try again.');
+      resetTurnstile();
     }
   };
 
@@ -100,6 +153,8 @@ export default function ContactForm() {
           className="w-full px-4 py-3 rounded-[var(--radius-button)] border-[3px] border-slate-900 bg-white text-slate-900 font-medium placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:shadow-[var(--shadow-brutalist-sm)] transition-all resize-none"
         />
       </div>
+
+      <div ref={turnstileRef} />
 
       {state === 'error' && (
         <div className="flex items-center gap-2 px-4 py-3 rounded-[var(--radius-button)] bg-rose-50 border-[3px] border-rose-400 text-rose-700 font-medium">

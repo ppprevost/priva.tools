@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import ContactForm from '../components/tools/ContactForm';
+
+const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY ?? '';
 ---
 
 <BaseLayout title="Contact - Priva.TOOLS" description="Get in touch with the Priva.TOOLS team. Questions, feedback, or partnership inquiries.">
@@ -13,8 +15,9 @@ import ContactForm from '../components/tools/ContactForm';
       <p class="text-lg text-slate-500 mt-3">Question, feedback, or just want to say hi? Drop us a message.</p>
     </div>
     <div class="bg-white rounded-[var(--radius-card)] border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-lg)] p-6 md:p-10">
-      <ContactForm client:load />
+      <ContactForm client:load turnstileSiteKey={turnstileSiteKey} />
     </div>
   </main>
   <Footer />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </BaseLayout>
