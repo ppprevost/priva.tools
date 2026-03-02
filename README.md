@@ -1,43 +1,70 @@
-# Astro Starter Kit: Minimal
+# Priva.TOOLS
+
+Privacy-first file tools that run entirely in your browser. No upload, no server processing, no tracking. Your files never leave your device.
+
+**Live at [priva.tools](https://priva.tools)**
+
+## What it does
+
+PDF and image tools powered by Web Workers and WebAssembly, all client-side:
+
+| Tool | Route |
+| :--- | :---- |
+| Compress PDF | `/compress-pdf` |
+| Merge PDF | `/merge-pdf` |
+| Split PDF | `/split-pdf` |
+| JPG to PDF | `/jpg-to-pdf` |
+| Compress Image | `/compress-image` |
+| Resize Image | `/resize-image` |
+| Crop Image | `/crop-image` |
+| Convert to JPG | `/convert-to-jpg` |
+| Remove Background | `/remove-background` |
+
+Other pages: `/blog`, `/about`, `/contact`, `/support`, `/privacy`
+
+## Tech stack
+
+- **Astro 5** + **React 19** with hybrid SSR (Node adapter)
+- **Tailwind CSS v4** with a brutalist design system
+- **Web Workers** for all file processing (no main thread blocking)
+- **Neon PostgreSQL** (serverless) for contact form, comments, and blog
+- **Cloudflare Turnstile** for captcha on forms
+- **Docker** + **Coolify** for deployment
+
+## Getting started
 
 ```sh
-pnpm create astro@latest -- --template minimal
+pnpm install
+pnpm dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The app runs at `localhost:4321`. All file tools work without any configuration since they run client-side.
 
-## 🚀 Project Structure
+## Environment variables
 
-Inside of your Astro project, you'll see the following folders and files:
+Only needed if you want the server-side features (contact form, comments, blog API, admin):
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+| Variable | Description |
+| :--- | :--- |
+| `DATABASE_URL` | Neon PostgreSQL connection string |
+| `TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key |
+| `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile secret key |
+| `PUBLIC_PAYPAL_LINK` | PayPal.me link for the support page (must be `PUBLIC_` prefixed for Astro buildtime) |
+| `MOBILE_API_KEY` | API key for the KMP mobile app |
+| `ADMIN_SECRET` | Bearer token for `/api/admin/comments` |
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Without these variables, the tools still work perfectly. The contact form and comments just won't be functional.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Commands
 
-Any static assets, like images, can be placed in the `public/` directory.
+| Command | Action |
+| :--- | :--- |
+| `pnpm dev` | Dev server at `localhost:4321` |
+| `pnpm build` | Production build to `./dist/` |
+| `pnpm preview` | Preview the production build locally |
+| `pnpm lint` | Run ESLint |
+| `pnpm lint:fix` | Fix ESLint errors |
 
-## 🧞 Commands
+## License
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+MIT
