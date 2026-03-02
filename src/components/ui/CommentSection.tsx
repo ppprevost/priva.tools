@@ -38,7 +38,7 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const turnstileRef = useRef<HTMLDivElement>(null);
-  const turnstileWidgetId = useRef<string | null>(null);
+  const turnstileWidgetIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/comments/${toolSlug}`)
@@ -54,10 +54,10 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
     if (!turnstileRef.current) return;
 
     const renderWidget = () => {
-      if (turnstileWidgetId.current !== null) return;
+      if (turnstileWidgetIdRef.current !== null) return;
       const w = window as unknown as { turnstile?: { render: (el: HTMLElement, opts: Record<string, unknown>) => string } };
       if (!w.turnstile) return;
-      turnstileWidgetId.current = w.turnstile.render(turnstileRef.current, {
+      turnstileWidgetIdRef.current = w.turnstile.render(turnstileRef.current, {
         sitekey: turnstileSiteKey,
         theme: 'light',
       });
@@ -83,8 +83,8 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
 
   const resetTurnstile = () => {
     const w = window as unknown as { turnstile?: { reset: (id: string) => void } };
-    if (w.turnstile && turnstileWidgetId.current !== null) {
-      w.turnstile.reset(turnstileWidgetId.current);
+    if (w.turnstile && turnstileWidgetIdRef.current !== null) {
+      w.turnstile.reset(turnstileWidgetIdRef.current);
     }
   };
 

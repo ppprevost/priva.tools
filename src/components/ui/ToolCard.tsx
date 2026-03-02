@@ -31,11 +31,11 @@ interface ToolCardProps {
 export default function ToolCard({ tool }: Readonly<ToolCardProps>) {
   const Icon = iconMap[tool.icon] ?? FileDown;
   const colors = categoryColors[tool.category];
-  const preloaded = useRef(false);
+  const preloadedRef = useRef(false);
 
   const handleMouseEnter = () => {
-    if (tool.slug !== 'remove-background' || preloaded.current) return;
-    preloaded.current = true;
+    if (tool.slug !== 'remove-background' || preloadedRef.current) return;
+    preloadedRef.current = true;
     import('@imgly/background-removal').then((m) => m.preload());
   };
 

@@ -42,7 +42,7 @@ export default function MergePdf() {
       {files.length > 0 && (
         <div className="space-y-3">
           {files.map((file, i) => (
-            <FileCard key={`${file.name}-${i}`} file={file} onRemove={() => removeFile(i)} />
+            <FileCard key={file.name} file={file} onRemove={() => removeFile(i)} />
           ))}
         </div>
       )}

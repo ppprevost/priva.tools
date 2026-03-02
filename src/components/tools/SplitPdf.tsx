@@ -106,9 +106,9 @@ export default function SplitPdf() {
                 <CheckCircle size={20} />
                 <p className="text-sm font-bold">Done! {results.length} files ready to download.</p>
               </div>
-              {results.map((result, i) => (
+              {results.map((result) => (
                 <button
-                  key={i}
+                  key={result.filename}
                   onClick={() => downloadResult(result)}
                   className="w-full flex items-center justify-between px-5 py-3 bg-white rounded-xl border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)] hover:-translate-y-0.5 transition-all"
                 >

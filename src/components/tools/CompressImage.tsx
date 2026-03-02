@@ -13,7 +13,7 @@ export default function CompressImage() {
   const [beforeUrl, setBeforeUrl] = useState<string | null>(null);
   const [afterUrl, setAfterUrl] = useState<string | null>(null);
   const [resultFilename, setResultFilename] = useState('');
-  const hasFiredConfetti = useRef(false);
+  const hasFiredConfettiRef = useRef(false);
   const workerRef = useRef<Worker | null>(null);
 
   const handleFiles = useCallback((files: File[]) => {
@@ -22,7 +22,7 @@ export default function CompressImage() {
     setFile(files[0]);
     setResultBlob(null);
     setAfterUrl(null);
-    hasFiredConfetti.current = false;
+    hasFiredConfettiRef.current = false;
     setBeforeUrl(URL.createObjectURL(files[0]));
   }, [beforeUrl, afterUrl]);
 
@@ -47,8 +47,8 @@ export default function CompressImage() {
           if (prev) URL.revokeObjectURL(prev);
           return URL.createObjectURL(blob);
         });
-        if (!hasFiredConfetti.current) {
-          hasFiredConfetti.current = true;
+        if (!hasFiredConfettiRef.current) {
+          hasFiredConfettiRef.current = true;
           fireConfetti();
         }
         worker.terminate();
