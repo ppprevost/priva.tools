@@ -17,7 +17,7 @@ export async function submitContact(input: SubmitContactInput): Promise<void> {
 
   const validation = validateContactMessage(input.name, input.email, input.message);
   if (!validation.valid) {
-    throw new ValidationError(validation.error!);
+    throw new ValidationError(validation.error ?? 'Invalid input.');
   }
 
   await insertContact(input.name.trim(), input.email.trim(), input.message.trim());

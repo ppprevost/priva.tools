@@ -1,8 +1,5 @@
 export class ValidationError extends Error {
   override name = 'ValidationError' as const;
-  constructor(message: string) {
-    super(message);
-  }
 }
 
 export class RateLimitError extends Error {
@@ -21,9 +18,6 @@ export class CaptchaError extends Error {
 
 export class NotFoundError extends Error {
   override name = 'NotFoundError' as const;
-  constructor(message: string) {
-    super(message);
-  }
 }
 
 export class AuthError extends Error {
