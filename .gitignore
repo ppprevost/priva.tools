@@ -26,5 +26,5 @@ pnpm-debug.log*
 # remotion video project (private)
 video/
 
-# claude code
-.claude/
+# claude code (local settings only)
+.claude/settings.local.json
