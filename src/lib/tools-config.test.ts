@@ -2,12 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { tools, pdfTools, imageTools, type ToolConfig } from './tools-config';
 
 describe('tools-config', () => {
-  it('has 9 tools', () => {
-    expect(Object.keys(tools)).toHaveLength(9);
+  it('has 11 tools', () => {
+    expect(Object.keys(tools)).toHaveLength(11);
   });
 
-  it('pdfTools has 4 tools', () => {
-    expect(pdfTools).toHaveLength(4);
+  it('pdfTools has 6 tools', () => {
+    expect(pdfTools).toHaveLength(6);
     pdfTools.forEach((t) => expect(t.category).toBe('pdf'));
   });
 
