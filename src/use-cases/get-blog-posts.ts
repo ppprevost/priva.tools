@@ -4,7 +4,8 @@ import type { BlogPost, BlogPostSummary } from '@/domain/entities';
 
 export async function listPosts(): Promise<BlogPostSummary[]> {
   const posts = await blogRepo.getAllPosts();
-  return posts.map(({ content: _, ...rest }) => rest);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return posts.map(({ content, ...rest }) => rest);
 }
 
 export async function getPost(slug: string): Promise<BlogPost> {

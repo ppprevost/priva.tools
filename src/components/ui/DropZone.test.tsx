@@ -15,6 +15,12 @@ function createDropEvent(files: File[]) {
   };
 }
 
+function getDropTarget() {
+  const el = screen.getByText('Drop your files here').closest('div[class]');
+  if (!el) throw new Error('DropZone container not found');
+  return el;
+}
+
 describe('DropZone', () => {
   it('renders drop zone text', () => {
     render(<DropZone accept=".pdf" onFiles={vi.fn()} />);
@@ -30,10 +36,8 @@ describe('DropZone', () => {
     const onFiles = vi.fn();
     render(<DropZone accept=".pdf" onFiles={onFiles} />);
 
-    const dropZone = screen.getByText('Drop your files here').closest('div[class]')!;
     const file = createFile('test.pdf', 1024);
-
-    fireEvent.drop(dropZone, createDropEvent([file]));
+    fireEvent.drop(getDropTarget(), createDropEvent([file]));
     expect(onFiles).toHaveBeenCalledWith([file]);
   });
 
@@ -41,10 +45,8 @@ describe('DropZone', () => {
     const onFiles = vi.fn();
     render(<DropZone accept=".pdf" onFiles={onFiles} />);
 
-    const dropZone = screen.getByText('Drop your files here').closest('div[class]')!;
     const bigFile = createFile('huge.pdf', 201 * 1024 * 1024);
-
-    fireEvent.drop(dropZone, createDropEvent([bigFile]));
+    fireEvent.drop(getDropTarget(), createDropEvent([bigFile]));
     expect(onFiles).not.toHaveBeenCalled();
     expect(screen.getByText(/exceeds the 200 MB limit/)).toBeInTheDocument();
   });
@@ -53,11 +55,9 @@ describe('DropZone', () => {
     const onFiles = vi.fn();
     render(<DropZone accept=".pdf" onFiles={onFiles} />);
 
-    const dropZone = screen.getByText('Drop your files here').closest('div[class]')!;
     const file1 = createFile('a.pdf', 100);
     const file2 = createFile('b.pdf', 200);
-
-    fireEvent.drop(dropZone, createDropEvent([file1, file2]));
+    fireEvent.drop(getDropTarget(), createDropEvent([file1, file2]));
     expect(onFiles).toHaveBeenCalledWith([file1]);
   });
 
@@ -65,11 +65,9 @@ describe('DropZone', () => {
     const onFiles = vi.fn();
     render(<DropZone accept=".pdf" multiple onFiles={onFiles} />);
 
-    const dropZone = screen.getByText('Drop your files here').closest('div[class]')!;
     const file1 = createFile('a.pdf', 100);
     const file2 = createFile('b.pdf', 200);
-
-    fireEvent.drop(dropZone, createDropEvent([file1, file2]));
+    fireEvent.drop(getDropTarget(), createDropEvent([file1, file2]));
     expect(onFiles).toHaveBeenCalledWith([file1, file2]);
   });
 });

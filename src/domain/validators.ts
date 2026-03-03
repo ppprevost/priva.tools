@@ -9,7 +9,7 @@ export const CONTACT_LIMITS = {
   message: { max: 5000 },
 } as const;
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // eslint-disable-line sonarjs/slow-regex
 
 export function isValidEmail(email: string): boolean {
   return EMAIL_REGEX.test(email);

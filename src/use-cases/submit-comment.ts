@@ -27,7 +27,7 @@ export async function submitComment(input: SubmitCommentInput): Promise<void> {
 
   const validation = validateComment(trimmedName, trimmedContent);
   if (!validation.valid) {
-    throw new ValidationError(validation.error!);
+    throw new ValidationError(validation.error ?? 'Invalid input.');
   }
 
   if (!input.isMobile && (!input.turnstileToken || !(await verifyTurnstile(input.turnstileToken)))) {
