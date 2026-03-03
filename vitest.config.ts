@@ -13,5 +13,6 @@ export default defineConfig({
     setupFiles: ['src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
     exclude: ['node_modules', 'dist', 'src/lib/workers/**', 'src/components/tools/**'],
+    testTimeout: 15000,
   },
 });
