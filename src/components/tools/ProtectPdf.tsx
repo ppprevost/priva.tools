@@ -92,7 +92,7 @@ export default function ProtectPdf() {
 
           {alreadyEncrypted && (
             <div className="flex items-center gap-3 px-4 py-3 bg-amber-50 rounded-xl border-[3px] border-amber-400">
-              <ShieldAlert size={20} className="text-amber-600 shrink-0" />
+              <ShieldAlert size={20} strokeWidth={2.5} className="text-amber-600 shrink-0" />
               <p className="text-sm font-bold text-amber-800">This PDF is already password-protected. Protecting it again will apply a new password.</p>
             </div>
           )}
@@ -114,7 +114,7 @@ export default function ProtectPdf() {
                     onClick={() => setShowPassword((s) => !s)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={18} strokeWidth={2.5} /> : <Eye size={18} strokeWidth={2.5} />}
                   </button>
                 </div>
               </div>
@@ -135,7 +135,7 @@ export default function ProtectPdf() {
                 onClick={() => setShowAdvanced((s) => !s)}
                 className="flex items-center gap-1 text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors"
               >
-                {showAdvanced ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                {showAdvanced ? <ChevronUp size={16} strokeWidth={2.5} /> : <ChevronDown size={16} strokeWidth={2.5} />}
                 Advanced options
               </button>
 
