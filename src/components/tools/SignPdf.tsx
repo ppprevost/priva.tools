@@ -4,6 +4,7 @@ import FileCard from '@/components/ui/FileCard';
 import ProgressBar from '@/components/ui/ProgressBar';
 import DownloadButton from '@/components/ui/DownloadButton';
 import Button from '@/components/ui/Button';
+import StatusMessage from '@/components/ui/StatusMessage';
 import { useWorker } from '@/hooks/useWorker';
 import { usePdfRenderer } from '@/hooks/usePdfRenderer';
 import { toPdfCoords, type Placement, type SignaturePlacement } from '@/lib/pdf/sign';
@@ -178,11 +179,11 @@ export default function SignPdf() {
           <FileCard file={file} onRemove={handleRemove} />
 
           {pdf.error && (
-            <p className="text-sm text-rose-600 font-bold text-center">{pdf.error}</p>
+            <StatusMessage variant="error">{pdf.error}</StatusMessage>
           )}
 
           {pdf.isLoading && (
-            <p className="text-sm text-slate-500 text-center font-medium">Loading PDF...</p>
+            <StatusMessage variant="loading">Loading PDF...</StatusMessage>
           )}
 
           {(phase === 'create-signature' || phase === 'create-initials') && !resultBlob && (
@@ -240,9 +241,9 @@ export default function SignPdf() {
               </div>
 
               {activeGhost && (
-                <p className="text-sm text-indigo-600 font-bold text-center">
+                <StatusMessage variant="info">
                   Click on the PDF to place your {activeGhost === 'initials' ? 'initials' : 'signature'}
-                </p>
+                </StatusMessage>
               )}
 
               <div className="flex justify-center">
@@ -284,12 +285,12 @@ export default function SignPdf() {
           {worker.isProcessing && (
             <div className="space-y-2">
               <ProgressBar value={worker.progress} />
-              <p className="text-sm text-slate-500 text-center font-medium">Signing...</p>
+              <StatusMessage variant="loading">Signing...</StatusMessage>
             </div>
           )}
 
           {worker.error && (
-            <p className="text-sm text-rose-600 font-bold text-center">{worker.error}</p>
+            <StatusMessage variant="error">{worker.error}</StatusMessage>
           )}
 
           {resultBlob && (
