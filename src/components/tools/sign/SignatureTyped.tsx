@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, use } from 'react';
 import Button from '@/components/ui/Button';
 import { Check } from 'lucide-react';
 
@@ -28,14 +28,10 @@ const ensureFontsLoaded = () => {
 };
 
 export default function SignatureTyped({ onConfirm }: Readonly<SignatureTypedProps>) {
+  use(ensureFontsLoaded());
   const [text, setText] = useState('');
   const [selectedFont, setSelectedFont] = useState(FONTS[0].name);
-  const [ready, setReady] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    ensureFontsLoaded().then(() => setReady(true));
-  }, []);
 
   const renderPreview = useCallback(() => {
     const canvas = canvasRef.current;
@@ -66,8 +62,8 @@ export default function SignatureTyped({ onConfirm }: Readonly<SignatureTypedPro
   }, [text, selectedFont]);
 
   useEffect(() => {
-    if (ready) renderPreview();
-  }, [ready, renderPreview]);
+    renderPreview();
+  }, [renderPreview]);
 
   const handleConfirm = useCallback(() => {
     const canvas = canvasRef.current;
