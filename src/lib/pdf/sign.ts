@@ -46,8 +46,7 @@ export async function signPdf(
 
   const pages = pdfDoc.getPages();
 
-  for (let i = 0; i < placements.length; i++) {
-    const p = placements[i];
+  for (const [i, p] of placements.entries()) {
     const page = pages[p.pageIndex];
     if (!page) continue;
 
