@@ -59,11 +59,11 @@ export default function SignaturePad({ onConfirm, width = 600, height = 200 }: R
       <p className="text-xs text-slate-400 text-center font-medium">Draw your signature above</p>
       <div className="flex justify-center gap-3">
         <Button variant="outline" size="sm" onClick={handleClear}>
-          <Eraser size={16} />
+          <Eraser size={16} strokeWidth={2.5} />
           Clear
         </Button>
         <Button size="sm" onClick={handleConfirm}>
-          <Check size={16} />
+          <Check size={16} strokeWidth={2.5} />
           Confirm
         </Button>
       </div>

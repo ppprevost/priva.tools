@@ -42,7 +42,7 @@ export default function SignatureCreator({ mode, onConfirm }: Readonly<Signature
                   : 'text-slate-500 hover:text-slate-700 border-[2px] border-transparent'
               }`}
             >
-              <Icon size={16} />
+              <Icon size={16} strokeWidth={2.5} />
               {tab.label}
             </button>
           );

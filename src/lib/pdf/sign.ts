@@ -1,5 +1,15 @@
 import { PDFDocument } from 'pdf-lib';
 
+export type Placement = {
+  id: string;
+  pageIndex: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  dataUrl: string;
+};
+
 export type SignaturePlacement = {
   pageIndex: number;
   xPdf: number;

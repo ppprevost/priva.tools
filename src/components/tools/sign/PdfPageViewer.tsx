@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback, type MouseEvent } from 'react';
-import PlacementOverlay, { type Placement } from './PlacementOverlay';
+import PlacementOverlay from './PlacementOverlay';
+import type { Placement } from '@/lib/pdf/sign';
 import type { PageInfo } from '@/hooks/usePdfRenderer';
 
 type PdfPageViewerProps = {
@@ -7,7 +8,9 @@ type PdfPageViewerProps = {
   renderPage: (canvas: HTMLCanvasElement, pageIndex: number) => Promise<PageInfo>;
   placements: Placement[];
   ghostImage: string | null;
-  onPlaceSignature: (pageIndex: number, x: number, y: number, containerW: number, containerH: number) => void;
+  ghostWidth: number;
+  ghostHeight: number;
+  onPlaceSignature: (pageIndex: number, x: number, y: number) => void;
   onUpdatePlacement: (id: string, updates: Partial<Pick<Placement, 'x' | 'y' | 'width' | 'height'>>) => void;
   onRemovePlacement: (id: string) => void;
 };
@@ -17,6 +20,8 @@ export default function PdfPageViewer({
   renderPage,
   placements,
   ghostImage,
+  ghostWidth,
+  ghostHeight,
   onPlaceSignature,
   onUpdatePlacement,
   onRemovePlacement,
@@ -45,8 +50,8 @@ export default function PdfPageViewer({
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    onPlaceSignature(pageIndex, x, y, dimensions.width, dimensions.height);
-  }, [ghostImage, pageIndex, dimensions, onPlaceSignature]);
+    onPlaceSignature(pageIndex, x, y);
+  }, [ghostImage, pageIndex, onPlaceSignature]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!ghostImage || !containerRef.current) return;
@@ -88,10 +93,10 @@ export default function PdfPageViewer({
           alt=""
           className="absolute pointer-events-none opacity-50"
           style={{
-            left: mousePos.x - 75,
-            top: mousePos.y - 25,
-            width: 150,
-            height: 50,
+            left: mousePos.x - ghostWidth / 2,
+            top: mousePos.y - ghostHeight / 2,
+            width: ghostWidth,
+            height: ghostHeight,
           }}
         />
       )}
