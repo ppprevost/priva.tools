@@ -1,5 +1,6 @@
 import createModule from '@neslinesli93/qpdf-wasm';
 import type { QpdfInstance } from '@neslinesli93/qpdf-wasm';
+import wasmUrl from '@neslinesli93/qpdf-wasm/dist/qpdf.wasm?url';
 
 export type QpdfContext = {
   qpdf: QpdfInstance;
@@ -10,7 +11,7 @@ export async function initQpdf(): Promise<QpdfContext> {
   const errorLines: string[] = [];
 
   const qpdf = await createModule({
-    locateFile: () => '/wasm/qpdf.wasm',
+    locateFile: () => wasmUrl,
     noInitialRun: true,
     printErr: (text: string) => { errorLines.push(text); },
     preRun: [(mod: QpdfInstance) => {
