@@ -74,7 +74,7 @@ export default function UnlockPdf() {
 
           {isEncrypted === false && !resultBlob && (
             <div className="flex items-center justify-center gap-3 px-4 py-3 bg-emerald-50 rounded-xl border-[3px] border-emerald-400">
-              <CheckCircle size={20} className="text-emerald-600 shrink-0" />
+              <CheckCircle size={20} strokeWidth={2.5} className="text-emerald-600 shrink-0" />
               <p className="text-sm font-bold text-emerald-800">This PDF is not password-protected.</p>
             </div>
           )}
@@ -82,7 +82,7 @@ export default function UnlockPdf() {
           {isEncrypted === true && !resultBlob && (
             <>
               <div className="flex items-center gap-3 px-4 py-3 bg-rose-50 rounded-xl border-[3px] border-rose-400">
-                <Lock size={20} className="text-rose-600 shrink-0" />
+                <Lock size={20} strokeWidth={2.5} className="text-rose-600 shrink-0" />
                 <p className="text-sm font-bold text-rose-800">This PDF is password-protected. Enter the password to unlock it.</p>
               </div>
 
@@ -102,7 +102,7 @@ export default function UnlockPdf() {
                     onClick={() => setShowPassword((s) => !s)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={18} strokeWidth={2.5} /> : <Eye size={18} strokeWidth={2.5} />}
                   </button>
                 </div>
               </div>
