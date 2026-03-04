@@ -1,0 +1,57 @@
+---
+import ToolLayout from '../layouts/ToolLayout.astro';
+import UnlockPdf from '../components/tools/UnlockPdf';
+import FeatureItem from '../components/ui/FeatureItem.astro';
+
+const faqItems = [
+  { question: 'Is it safe to unlock my PDF here?', answer: 'Yes. Priva.TOOLS processes everything in your browser. Your file and password never leave your device, so there is zero risk of interception.' },
+  { question: 'Can I unlock any PDF?', answer: 'You can unlock any PDF for which you know the password. We cannot bypass password protection on PDFs you do not own or have authorization to access.' },
+  { question: 'What happens if I enter the wrong password?', answer: 'You will see a clear error message. Simply try again with the correct password. There is no attempt limit.' },
+  { question: 'Will unlocking change the PDF content?', answer: 'No. Unlocking only removes the password protection. The content, layout, and formatting remain identical.' },
+];
+---
+
+<ToolLayout
+  title="Unlock PDF Online Free - Remove PDF Password | Priva.TOOLS"
+  heading="Unlock PDF"
+  description="Remove the password from a protected PDF file. Free, no upload, 100% browser-based."
+  relatedSlugs={['protect-pdf', 'compress-pdf', 'split-pdf']}
+  faqItems={faqItems}
+  toolSlug="unlock-pdf"
+>
+  <UnlockPdf client:idle />
+
+  <section class="mt-16 space-y-12 text-left" slot="seo-content">
+    <div>
+      <h2 class="text-2xl font-black text-slate-900 mb-4">How to Unlock a PDF</h2>
+      <ol class="list-decimal list-inside space-y-2 text-slate-600 font-medium">
+        <li>Drop your PDF file in the box above or click "Browse" to select it.</li>
+        <li>The tool automatically detects if your PDF is password-protected.</li>
+        <li>Enter the password and click "Unlock PDF".</li>
+        <li>Download your unlocked PDF. That's it!</li>
+      </ol>
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-black text-slate-900 mb-4">Why Unlock PDFs with Priva.TOOLS?</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <FeatureItem title="100% Private" description="Your PDF and password never leave your device. Unlike other tools, we don't upload your files to any server. Decryption happens entirely in your browser using WebAssembly." />
+        <FeatureItem title="Instant Detection" description="As soon as you drop a file, we instantly detect whether it is password-protected, so you know right away if a password is needed." />
+        <FeatureItem title="Preserves Content" description="Unlocking only removes the password. Your document content, layout, images, and formatting stay exactly the same." />
+        <FeatureItem title="Works Offline" description="Since everything runs locally, you can unlock PDFs even without an internet connection after the page loads." />
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-black text-slate-900 mb-4">Frequently Asked Questions</h2>
+      <dl class="space-y-4">
+        {faqItems.map(({ question, answer }) => (
+          <div>
+            <dt class="font-bold text-slate-900">{question}</dt>
+            <dd class="text-slate-600 mt-1">{answer}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+</ToolLayout>
