@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+import StatusMessage from '@/components/ui/StatusMessage';
 import SignaturePad from './SignaturePad';
 import SignatureTyped from './SignatureTyped';
 import SignatureUpload from './SignatureUpload';
@@ -50,7 +51,11 @@ export default function SignatureCreator({ mode, onConfirm }: Readonly<Signature
       </div>
 
       {activeTab === 'draw' && <SignaturePad onConfirm={onConfirm} {...padSize} />}
-      {activeTab === 'type' && <SignatureTyped onConfirm={onConfirm} />}
+      {activeTab === 'type' && (
+        <Suspense fallback={<StatusMessage variant="loading">Loading fonts...</StatusMessage>}>
+          <SignatureTyped onConfirm={onConfirm} />
+        </Suspense>
+      )}
       {activeTab === 'upload' && <SignatureUpload onConfirm={onConfirm} />}
     </div>
   );
