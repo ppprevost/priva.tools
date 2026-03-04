@@ -75,11 +75,6 @@ export default function PlacementOverlay({
     }
   }, [isDragging, isResizing, placement.id, placement.x, placement.y, placement.width, placement.height, containerWidth, containerHeight, onUpdate]);
 
-  const handlePointerUp = useCallback(() => {
-    setIsDragging(false);
-    setIsResizing(false);
-  }, []);
-
   useEffect(() => {
     if (!isDragging && !isResizing) return;
     const handler = () => {
@@ -103,7 +98,6 @@ export default function PlacementOverlay({
       }}
       onPointerDown={handleDragStart}
       onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
     >
       <div className="absolute inset-0 border-2 border-indigo-500 rounded-md border-dashed opacity-0 group-hover:opacity-100 transition-opacity" />
 

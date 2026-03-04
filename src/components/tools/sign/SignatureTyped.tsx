@@ -1,11 +1,14 @@
 import { useState, useRef, useCallback, useEffect, use } from 'react';
 import Button from '@/components/ui/Button';
 import { Check } from 'lucide-react';
+import satisfyUrl from '@fontsource/satisfy/files/satisfy-latin-400-normal.woff2?url';
+import dancingUrl from '@fontsource/dancing-script/files/dancing-script-latin-400-normal.woff2?url';
+import pacificoUrl from '@fontsource/pacifico/files/pacifico-latin-400-normal.woff2?url';
 
 const FONTS = [
-  { name: 'Satisfy', file: '/fonts/Satisfy-Regular.ttf' },
-  { name: 'Dancing Script', file: '/fonts/DancingScript-Regular.ttf' },
-  { name: 'Pacifico', file: '/fonts/Pacifico-Regular.ttf' },
+  { name: 'Satisfy', url: satisfyUrl },
+  { name: 'Dancing Script', url: dancingUrl },
+  { name: 'Pacifico', url: pacificoUrl },
 ] as const;
 
 type SignatureTypedProps = {
@@ -18,7 +21,7 @@ const ensureFontsLoaded = () => {
   if (!fontsPromise) {
     fontsPromise = Promise.all(
       FONTS.map((f) =>
-        new FontFace(f.name, `url(${f.file})`, { style: 'normal', weight: '400' })
+        new FontFace(f.name, `url(${f.url})`, { style: 'normal', weight: '400' })
           .load()
           .then((loaded) => document.fonts.add(loaded)),
       ),
@@ -90,8 +93,8 @@ export default function SignatureTyped({ onConfirm }: Readonly<SignatureTypedPro
             onClick={() => setSelectedFont(f.name)}
             className={`flex-1 px-3 py-2 rounded-xl border-[2px] text-lg transition-all cursor-pointer ${
               selectedFont === f.name
-                ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                : 'border-slate-300 hover:border-slate-400'
+                ? 'border-slate-900 bg-indigo-50 text-indigo-700'
+                : 'border-slate-200 hover:border-slate-400'
             }`}
             style={{ fontFamily: `'${f.name}', cursive` }}
           >

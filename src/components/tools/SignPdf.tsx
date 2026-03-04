@@ -126,8 +126,10 @@ export default function SignPdf() {
           pageInfo.widthPt, pageInfo.heightPt,
         );
 
-        const res = await fetch(p.dataUrl);
-        const buf = await res.arrayBuffer();
+        const base64 = p.dataUrl.split(',')[1];
+        const binary = atob(base64);
+        const buf = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) buf[i] = binary.charCodeAt(i);
 
         return {
           pageIndex: p.pageIndex,
@@ -135,7 +137,7 @@ export default function SignPdf() {
           yPdf: coords.yPdf,
           widthPdf: coords.widthPdf,
           heightPdf: coords.heightPdf,
-          imageBytes: new Uint8Array(buf),
+          imageBytes: buf,
         };
       })
     );

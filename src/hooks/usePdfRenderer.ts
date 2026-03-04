@@ -89,7 +89,14 @@ export function usePdfRenderer(): UsePdfRendererReturn {
 
     const renderTask = page.render({ canvasContext: ctx, viewport: scaledViewport });
     renderTaskRef.current = renderTask;
-    await renderTask.promise;
+    try {
+      await renderTask.promise;
+    } catch (err) {
+      if ((err as Error)?.name === 'RenderingCancelledException') {
+        return { widthPt: viewport.width, heightPt: viewport.height, widthPx: scaledViewport.width, heightPx: scaledViewport.height };
+      }
+      throw err;
+    }
 
     return {
       widthPt: viewport.width,
