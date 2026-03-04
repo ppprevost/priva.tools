@@ -1,6 +1,7 @@
 ---
 import ToolLayout from '../layouts/ToolLayout.astro';
 import SignPdf from '../components/tools/SignPdf';
+import FeatureItem from '../components/ui/FeatureItem.astro';
 
 const faqItems = [
   { question: 'Is my PDF uploaded to a server?', answer: 'No. Priva.TOOLS processes everything in your browser. Your PDF and signature never leave your device.' },
@@ -36,22 +37,10 @@ const faqItems = [
     <div>
       <h2 class="text-2xl font-black text-slate-900 mb-4">Why Sign PDFs with Priva.TOOLS?</h2>
       <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="font-bold text-slate-900 mb-1">100% Private</h3>
-          <p class="text-slate-600">Your PDF and signature never leave your device. Unlike DocuSign, Adobe Sign, or SmallPDF, we don't upload your files to any server. Everything runs locally in your browser.</p>
-        </div>
-        <div>
-          <h3 class="font-bold text-slate-900 mb-1">Three Signature Methods</h3>
-          <p class="text-slate-600">Draw your signature freehand, type your name with elegant handwriting fonts, or upload a photo of your signature. All three methods produce a clean, professional result.</p>
-        </div>
-        <div>
-          <h3 class="font-bold text-slate-900 mb-1">Signature + Initials</h3>
-          <p class="text-slate-600">Add both your full signature and initials to different pages. Place multiple signatures or initials wherever needed on the document.</p>
-        </div>
-        <div>
-          <h3 class="font-bold text-slate-900 mb-1">Works Offline</h3>
-          <p class="text-slate-600">Since everything runs locally, you can sign PDFs even without an internet connection after the page loads.</p>
-        </div>
+        <FeatureItem title="100% Private" description="Your PDF and signature never leave your device. Unlike DocuSign, Adobe Sign, or SmallPDF, we don't upload your files to any server. Everything runs locally in your browser." />
+        <FeatureItem title="Three Signature Methods" description="Draw your signature freehand, type your name with elegant handwriting fonts, or upload a photo of your signature. All three methods produce a clean, professional result." />
+        <FeatureItem title="Signature + Initials" description="Add both your full signature and initials to different pages. Place multiple signatures or initials wherever needed on the document." />
+        <FeatureItem title="Works Offline" description="Since everything runs locally, you can sign PDFs even without an internet connection after the page loads." />
       </div>
     </div>
 
