@@ -12,27 +12,29 @@ type SignatureTypedProps = {
   onConfirm: (dataUrl: string) => void;
 };
 
-const loadFonts = async () => {
-  const faces = FONTS.map(
-    (f) => new FontFace(f.name, `url(${f.file})`, { style: 'normal', weight: '400' }),
-  );
-  await Promise.all(faces.map((face) => face.load().then((loaded) => document.fonts.add(loaded))));
-};
+let fontsPromise: Promise<void> | null = null;
 
-let fontsLoaded = false;
+const ensureFontsLoaded = () => {
+  if (!fontsPromise) {
+    fontsPromise = Promise.all(
+      FONTS.map((f) =>
+        new FontFace(f.name, `url(${f.file})`, { style: 'normal', weight: '400' })
+          .load()
+          .then((loaded) => document.fonts.add(loaded)),
+      ),
+    ).then(() => undefined);
+  }
+  return fontsPromise;
+};
 
 export default function SignatureTyped({ onConfirm }: Readonly<SignatureTypedProps>) {
   const [text, setText] = useState('');
   const [selectedFont, setSelectedFont] = useState(FONTS[0].name);
-  const [ready, setReady] = useState(fontsLoaded);
+  const [ready, setReady] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (fontsLoaded) return;
-    loadFonts().then(() => {
-      fontsLoaded = true;
-      setReady(true);
-    });
+    ensureFontsLoaded().then(() => setReady(true));
   }, []);
 
   const renderPreview = useCallback(() => {
@@ -110,7 +112,7 @@ export default function SignatureTyped({ onConfirm }: Readonly<SignatureTypedPro
 
       <div className="flex justify-center">
         <Button size="sm" onClick={handleConfirm} disabled={!text.trim()}>
-          <Check size={16} />
+          <Check size={16} strokeWidth={2.5} />
           Confirm
         </Button>
       </div>

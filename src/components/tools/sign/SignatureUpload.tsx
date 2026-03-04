@@ -5,7 +5,7 @@ type SignatureUploadProps = {
   onConfirm: (dataUrl: string) => void;
 };
 
-const convertToTransparentPng = (file: File): Promise<string> =>
+const convertToPng = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
@@ -26,7 +26,7 @@ export default function SignatureUpload({ onConfirm }: Readonly<SignatureUploadP
   const handleFiles = useCallback(async (files: File[]) => {
     const file = files[0];
     if (!file) return;
-    const dataUrl = await convertToTransparentPng(file);
+    const dataUrl = await convertToPng(file);
     onConfirm(dataUrl);
   }, [onConfirm]);
 

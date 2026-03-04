@@ -1,15 +1,6 @@
 import { useState, useCallback, useRef, useEffect, type PointerEvent as ReactPointerEvent } from 'react';
 import { X } from 'lucide-react';
-
-export type Placement = {
-  id: string;
-  pageIndex: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  dataUrl: string;
-};
+import type { Placement } from '@/lib/pdf/sign';
 
 type PlacementOverlayProps = {
   placement: Placement;
@@ -128,7 +119,7 @@ export default function PlacementOverlay({
         onClick={(e) => { e.stopPropagation(); onRemove(placement.id); }}
         className="absolute -top-3 -right-3 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 cursor-pointer"
       >
-        <X size={12} />
+        <X size={12} strokeWidth={2.5} />
       </button>
 
       <div

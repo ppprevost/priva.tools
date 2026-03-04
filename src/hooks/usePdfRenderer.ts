@@ -33,8 +33,7 @@ export function usePdfRenderer(): UsePdfRendererReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const pdfDocRef = useRef<PDFDocumentProxy | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderTaskRef = useRef<any>(null);
+  const renderTaskRef = useRef<{ cancel: () => void; promise: Promise<void> } | null>(null);
 
   const loadPdf = useCallback(async (data: ArrayBuffer) => {
     setIsLoading(true);

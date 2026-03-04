@@ -6,12 +6,11 @@ import DownloadButton from '@/components/ui/DownloadButton';
 import Button from '@/components/ui/Button';
 import { useWorker } from '@/hooks/useWorker';
 import { usePdfRenderer } from '@/hooks/usePdfRenderer';
-import { toPdfCoords, type SignaturePlacement } from '@/lib/pdf/sign';
+import { toPdfCoords, type Placement, type SignaturePlacement } from '@/lib/pdf/sign';
 import { fireConfetti } from '@/lib/confetti';
 import SignatureCreator from './sign/SignatureCreator';
 import PdfPageViewer from './sign/PdfPageViewer';
 import PageNavigator from './sign/PageNavigator';
-import type { Placement } from './sign/PlacementOverlay';
 import { PenLine, Stamp, ArrowLeft } from 'lucide-react';
 
 type Phase = 'upload' | 'create-signature' | 'create-initials' | 'place';
@@ -20,6 +19,8 @@ const SIGNATURE_DISPLAY_W = 150;
 const SIGNATURE_DISPLAY_H = 50;
 const INITIALS_DISPLAY_W = 80;
 const INITIALS_DISPLAY_H = 40;
+
+type StoredPageInfo = { widthPt: number; heightPt: number; widthPx: number; heightPx: number };
 
 export default function SignPdf() {
   const [file, setFile] = useState<File | null>(null);
@@ -30,11 +31,11 @@ export default function SignPdf() {
   const [placements, setPlacements] = useState<Placement[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const pdfDataRef = useRef<ArrayBuffer | null>(null);
-  const pageInfoRef = useRef<Map<number, { widthPt: number; heightPt: number }>>(new Map());
+  const pageInfoRef = useRef<Map<number, StoredPageInfo>>(new Map());
 
   const pdf = usePdfRenderer();
 
-  const { process: workerProcess, reset: workerReset, ...workerState } = useWorker({
+  const worker = useWorker({
     createWorker: () =>
       new Worker(new URL('../../lib/workers/sign-pdf.worker.ts', import.meta.url), { type: 'module' }),
   });
@@ -42,7 +43,7 @@ export default function SignPdf() {
   const handleFiles = useCallback(async (files: File[]) => {
     const f = files[0];
     setFile(f);
-    workerReset();
+    worker.reset();
     setPlacements([]);
     setSignatureDataUrl(null);
     setInitialsDataUrl(null);
@@ -56,7 +57,7 @@ export default function SignPdf() {
     if (!pdf.error) {
       setPhase('create-signature');
     }
-  }, [pdf, workerReset]);
+  }, [pdf, worker]);
 
   const handleSignatureConfirm = useCallback((dataUrl: string) => {
     setSignatureDataUrl(dataUrl);
@@ -70,7 +71,7 @@ export default function SignPdf() {
     setPhase('place');
   }, []);
 
-  const handlePlaceSignature = useCallback((pageIndex: number, x: number, y: number, containerW: number, containerH: number) => {
+  const handlePlaceSignature = useCallback((pageIndex: number, x: number, y: number) => {
     const ghost = activeGhost;
     const dataUrl = ghost === 'initials' ? initialsDataUrl : signatureDataUrl;
     if (!dataUrl) return;
@@ -104,29 +105,22 @@ export default function SignPdf() {
     setPlacements((prev) => prev.filter((p) => p.id !== id));
   }, []);
 
-  const storePageInfo = useCallback((pageIndex: number, widthPt: number, heightPt: number) => {
-    pageInfoRef.current.set(pageIndex, { widthPt, heightPt });
-  }, []);
-
   const renderPageWithInfo = useCallback(async (canvas: HTMLCanvasElement, pageIndex: number) => {
     const info = await pdf.renderPage(canvas, pageIndex);
-    storePageInfo(pageIndex, info.widthPt, info.heightPt);
+    pageInfoRef.current.set(pageIndex, info);
     return info;
-  }, [pdf, storePageInfo]);
+  }, [pdf]);
 
   const handleSign = useCallback(async () => {
     if (!pdfDataRef.current || placements.length === 0) return;
 
     const pdfPlacements: SignaturePlacement[] = await Promise.all(
       placements.map(async (p) => {
-        const pageInfo = pageInfoRef.current.get(p.pageIndex) ?? { widthPt: 612, heightPt: 792 };
-        const canvas = document.querySelector(`canvas`) as HTMLCanvasElement | null;
-        const canvasW = canvas ? parseFloat(canvas.style.width) : pageInfo.widthPt;
-        const canvasH = canvas ? parseFloat(canvas.style.height) : pageInfo.heightPt;
+        const pageInfo = pageInfoRef.current.get(p.pageIndex) ?? { widthPt: 612, heightPt: 792, widthPx: 612, heightPx: 792 };
 
         const coords = toPdfCoords(
           p.x, p.y, p.width, p.height,
-          canvasW, canvasH,
+          pageInfo.widthPx, pageInfo.heightPx,
           pageInfo.widthPt, pageInfo.heightPt,
         );
 
@@ -145,28 +139,30 @@ export default function SignPdf() {
     );
 
     const buffer = pdfDataRef.current.slice(0);
-    workerProcess(buffer, { placements: pdfPlacements }, file?.name);
-  }, [placements, file, workerProcess]);
+    worker.process(buffer, { placements: pdfPlacements }, file?.name);
+  }, [placements, file, worker]);
 
   useEffect(() => {
-    if (workerState.result) fireConfetti();
-  }, [workerState.result]);
+    if (worker.result) fireConfetti();
+  }, [worker.result]);
 
-  const resultBlob = workerState.result ? new Blob([workerState.result.data], { type: 'application/pdf' }) : null;
+  const resultBlob = worker.result ? new Blob([worker.result.data], { type: 'application/pdf' }) : null;
 
   const handleRemove = useCallback(() => {
     setFile(null);
     setPhase('upload');
-    workerReset();
+    worker.reset();
     setPlacements([]);
     setSignatureDataUrl(null);
     setInitialsDataUrl(null);
     setActiveGhost(null);
     setCurrentPage(0);
     pdfDataRef.current = null;
-  }, [workerReset]);
+  }, [worker]);
 
   const ghostImage = activeGhost === 'initials' ? initialsDataUrl : activeGhost === 'signature' ? signatureDataUrl : null;
+  const ghostW = activeGhost === 'initials' ? INITIALS_DISPLAY_W : SIGNATURE_DISPLAY_W;
+  const ghostH = activeGhost === 'initials' ? INITIALS_DISPLAY_H : SIGNATURE_DISPLAY_H;
 
   return (
     <div className="space-y-6">
@@ -193,7 +189,7 @@ export default function SignPdf() {
             </div>
           )}
 
-          {phase === 'place' && !resultBlob && !workerState.isProcessing && (
+          {phase === 'place' && !resultBlob && !worker.isProcessing && (
             <>
               <div className="flex flex-wrap items-center justify-center gap-3">
                 {signatureDataUrl && (
@@ -202,7 +198,7 @@ export default function SignPdf() {
                     size="sm"
                     onClick={() => setActiveGhost(activeGhost === 'signature' ? null : 'signature')}
                   >
-                    <PenLine size={16} />
+                    <PenLine size={16} strokeWidth={2.5} />
                     Place signature
                   </Button>
                 )}
@@ -212,7 +208,7 @@ export default function SignPdf() {
                     size="sm"
                     onClick={() => setActiveGhost(activeGhost === 'initials' ? null : 'initials')}
                   >
-                    <Stamp size={16} />
+                    <Stamp size={16} strokeWidth={2.5} />
                     Place initials
                   </Button>
                 ) : (
@@ -221,7 +217,7 @@ export default function SignPdf() {
                     size="sm"
                     onClick={() => setPhase('create-initials')}
                   >
-                    <Stamp size={16} />
+                    <Stamp size={16} strokeWidth={2.5} />
                     Add initials
                   </Button>
                 )}
@@ -233,7 +229,7 @@ export default function SignPdf() {
                     setPhase('create-signature');
                   }}
                 >
-                  <ArrowLeft size={16} />
+                  <ArrowLeft size={16} strokeWidth={2.5} />
                   New signature
                 </Button>
               </div>
@@ -250,6 +246,8 @@ export default function SignPdf() {
                   renderPage={renderPageWithInfo}
                   placements={placements}
                   ghostImage={ghostImage}
+                  ghostWidth={ghostW}
+                  ghostHeight={ghostH}
                   onPlaceSignature={handlePlaceSignature}
                   onUpdatePlacement={handleUpdatePlacement}
                   onRemovePlacement={handleRemovePlacement}
@@ -270,7 +268,7 @@ export default function SignPdf() {
                     {placements.length} placement{placements.length > 1 ? 's' : ''} added
                   </p>
                   <Button onClick={handleSign} size="lg">
-                    <PenLine size={20} />
+                    <PenLine size={20} strokeWidth={2.5} />
                     Sign PDF
                   </Button>
                 </div>
@@ -278,20 +276,20 @@ export default function SignPdf() {
             </>
           )}
 
-          {workerState.isProcessing && (
+          {worker.isProcessing && (
             <div className="space-y-2">
-              <ProgressBar value={workerState.progress} />
+              <ProgressBar value={worker.progress} />
               <p className="text-sm text-slate-500 text-center font-medium">Signing...</p>
             </div>
           )}
 
-          {workerState.error && (
-            <p className="text-sm text-rose-600 font-bold text-center">{workerState.error}</p>
+          {worker.error && (
+            <p className="text-sm text-rose-600 font-bold text-center">{worker.error}</p>
           )}
 
           {resultBlob && (
             <div className="flex justify-center">
-              <DownloadButton blob={resultBlob} filename={workerState.result?.filename ?? ''} />
+              <DownloadButton blob={resultBlob} filename={worker.result?.filename ?? ''} />
             </div>
           )}
         </>
