@@ -26,5 +26,9 @@ pnpm-debug.log*
 # remotion video project (private)
 video/
 
+# wasm build output
+crates/pdf-editor/pkg/
+crates/pdf-editor/target/
+
 # claude code
 .claude/

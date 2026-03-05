@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "build:wasm": "wasm-pack build crates/pdf-editor --target web --out-dir pkg",
     "prepare": "husky || true"
   },
   "dependencies": {
@@ -42,6 +43,11 @@
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.1",
     "upng-js": "^2.1.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "svgo": "^4.0.1"
+    }
   },
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^2.13.0",
