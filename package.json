@@ -44,6 +44,11 @@
     "tailwindcss": "^4.2.1",
     "upng-js": "^2.1.0"
   },
+  "pnpm": {
+    "overrides": {
+      "svgo": "^4.0.1"
+    }
+  },
   "devDependencies": {
     "@eslint-react/eslint-plugin": "^2.13.0",
     "@eslint/js": "^10.0.1",
