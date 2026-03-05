@@ -11,5 +11,10 @@ export default defineConfig({
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@pdf-editor': new URL('./crates/pdf-editor/pkg', import.meta.url).pathname,
+      },
+    },
   },
 });
