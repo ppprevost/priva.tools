@@ -43,3 +43,37 @@
   0%, 100% { transform: scale(1) rotate(0deg); }
   50% { transform: scale(1.1) rotate(10deg); }
 }
+
+
+/* pdfjs 5.x text layer */
+/* --total-scale-factor and --min-font-size are set dynamically by JS/pdfjs */
+.pdf-text-layer {
+  --text-scale-factor: calc(var(--total-scale-factor, 1) * var(--min-font-size, 1));
+}
+
+.pdf-text-layer span,
+.pdf-text-layer br {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  position: absolute;
+  white-space: pre;
+  transform-origin: 0% 0%;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+  pointer-events: auto;
+}
+
+.pdf-text-layer > :not(.markedContent),
+.pdf-text-layer .markedContent span:not(.markedContent) {
+  font-size: calc(var(--text-scale-factor) * var(--font-height, 0px));
+  transform: rotate(var(--rotate, 0deg)) scaleX(var(--scale-x, 1));
+}
+
+.pdf-text-layer .markedContent {
+  display: contents;
+}
+
+::selection {
+  background: rgba(255, 214, 0, 0.4);
+}

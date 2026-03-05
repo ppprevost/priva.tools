@@ -10,7 +10,8 @@ export type PageInfo = {
 
 export type UsePdfRendererReturn = {
   loadPdf: (data: ArrayBuffer) => Promise<void>;
-  renderPage: (canvas: HTMLCanvasElement, pageIndex: number) => Promise<PageInfo>;
+  renderPage: (canvas: HTMLCanvasElement, pageIndex: number, extraScale?: number) => Promise<PageInfo>;
+  renderTextLayer: (container: HTMLDivElement, pageIndex: number, scale: number) => Promise<void>;
   totalPages: number;
   isLoading: boolean;
   error: string | null;
@@ -61,7 +62,7 @@ export function usePdfRenderer(): UsePdfRendererReturn {
     }
   }, []);
 
-  const renderPage = useCallback(async (canvas: HTMLCanvasElement, pageIndex: number): Promise<PageInfo> => {
+  const renderPage = useCallback(async (canvas: HTMLCanvasElement, pageIndex: number, extraScale = 1): Promise<PageInfo> => {
     const doc = pdfDocRef.current;
     if (!doc) throw new Error('No PDF loaded');
 
@@ -70,13 +71,13 @@ export function usePdfRenderer(): UsePdfRendererReturn {
 
     const dpr = window.devicePixelRatio || 1;
     const displayWidth = canvas.parentElement?.clientWidth ?? viewport.width;
-    const scale = displayWidth / viewport.width;
+    const scale = (displayWidth / viewport.width) * extraScale;
     const scaledViewport = page.getViewport({ scale });
 
     canvas.width = scaledViewport.width * dpr;
     canvas.height = scaledViewport.height * dpr;
-    canvas.style.width = `${scaledViewport.width}px`;
-    canvas.style.height = `${scaledViewport.height}px`;
+    canvas.style.width = `${scaledViewport.width / extraScale}px`;
+    canvas.style.height = `${scaledViewport.height / extraScale}px`;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Cannot get canvas context');
@@ -101,8 +102,8 @@ export function usePdfRenderer(): UsePdfRendererReturn {
     return {
       widthPt: viewport.width,
       heightPt: viewport.height,
-      widthPx: scaledViewport.width,
-      heightPx: scaledViewport.height,
+      widthPx: scaledViewport.width / extraScale,
+      heightPx: scaledViewport.height / extraScale,
     };
   }, []);
 
@@ -112,5 +113,22 @@ export function usePdfRenderer(): UsePdfRendererReturn {
     };
   }, []);
 
-  return { loadPdf, renderPage, totalPages, isLoading, error };
+  const renderTextLayer = useCallback(async (container: HTMLDivElement, pageIndex: number, scale: number): Promise<void> => {
+    const doc = pdfDocRef.current;
+    if (!doc) return;
+    const pdfjs = await getPdfjs();
+    const page = await doc.getPage(pageIndex + 1);
+    const viewport = page.getViewport({ scale });
+    const textContent = await page.getTextContent();
+    container.innerHTML = '';
+    container.style.setProperty('--total-scale-factor', String(scale));
+    try {
+      const layer = new pdfjs.TextLayer({ textContentSource: textContent, container, viewport });
+      await layer.render();
+    } catch {
+      // ignore cancellation errors
+    }
+  }, []);
+
+  return { loadPdf, renderPage, renderTextLayer, totalPages, isLoading, error };
 }
