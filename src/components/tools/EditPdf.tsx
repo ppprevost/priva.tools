@@ -14,12 +14,17 @@ import type { EditOp, FormField, ActiveTool } from '@/lib/pdf/edit-types';
 const PX_PER_PT = 150 / 72; // 150 DPI rasterisation
 
 function bytesToB64(bytes: Uint8ClampedArray | Uint8Array): string {
-  let s = '';
-  const chunk = 8192;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    s += String.fromCharCode(...(bytes.subarray(i, i + chunk) as unknown as number[]));
+  const b64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  let result = '';
+  const len = bytes.length;
+  for (let i = 0; i < len; i += 3) {
+    const b0 = bytes[i], b1 = bytes[i + 1] ?? 0, b2 = bytes[i + 2] ?? 0;
+    result += b64chars[b0 >> 2];
+    result += b64chars[((b0 & 3) << 4) | (b1 >> 4)];
+    result += i + 1 < len ? b64chars[((b1 & 15) << 2) | (b2 >> 6)] : '=';
+    result += i + 2 < len ? b64chars[b2 & 63] : '=';
   }
-  return btoa(s);
+  return result;
 }
 
 type FreetextOp = Extract<EditOp, { type: 'freetext' }>;
