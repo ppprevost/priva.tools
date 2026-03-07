@@ -1,5 +1,5 @@
-import init, { apply_edits, get_form_fields } from '@pdf-editor/pdf_editor.js';
-import wasmUrl from '@pdf-editor/pdf_editor_bg.wasm?url';
+import init, { apply_edits, get_form_fields } from '@ppprevost/pdf-wasm/pdf_editor.js';
+import wasmUrl from '@ppprevost/pdf-wasm/pdf_editor_bg.wasm?url';
 
 export { apply_edits, get_form_fields };
 
