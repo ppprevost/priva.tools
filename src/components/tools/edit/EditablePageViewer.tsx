@@ -43,9 +43,13 @@ export default function EditablePageViewer({
   const scaleRef = useRef(scale);
   const internalZoomRef = useRef(zoom);
   const activeToolRef = useRef(activeTool);
+  const onAddOpRef = useRef(onAddOp);
+  const pageIndexRef = useRef(pageIndex);
   panRef.current = pan;
   scaleRef.current = scale;
   activeToolRef.current = activeTool;
+  onAddOpRef.current = onAddOp;
+  pageIndexRef.current = pageIndex;
 
   const lastRenderedScaleRef = useRef(1.0);
 
@@ -264,7 +268,7 @@ export default function EditablePageViewer({
       const rect = vp.getBoundingClientRect();
       const s = scaleRef.current;
       const { x: px, y: py } = panRef.current;
-      const info = pageInfo;
+      const info = pageInfoRef.current;
       const quadPoints: number[] = [];
       for (const r of Array.from(sel.getRangeAt(0).getClientRects())) {
         if (r.width < 1 || r.height < 1) continue;
@@ -277,13 +281,13 @@ export default function EditablePageViewer({
         quadPoints.push(x1 * sx, info.heightPt - y1 * sy, x2 * sx, info.heightPt - y1 * sy, x1 * sx, info.heightPt - y2 * sy, x2 * sx, info.heightPt - y2 * sy);
       }
       if (quadPoints.length >= 8) {
-        onAddOp({ type: 'highlight', page: pageIndex, quadPoints, color: [1, 0.84, 0] });
+        onAddOpRef.current({ type: 'highlight', page: pageIndexRef.current, quadPoints, color: [1, 0.84, 0] });
       }
       sel.removeAllRanges();
     };
     window.addEventListener('mouseup', onWindowMouseUp);
     return () => window.removeEventListener('mouseup', onWindowMouseUp);
-  }, [activeTool, pageIndex, onAddOp, pageInfo]);
+  }, [activeTool]);
 
   // --- Edit-text: hover tooltip ---
   const handleTextLayerMouseOver = useCallback((e: MouseEvent) => {
