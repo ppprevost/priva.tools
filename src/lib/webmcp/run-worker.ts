@@ -33,8 +33,9 @@ const countPadding = (b64: string): number => {
 };
 
 export const b64ToBuffer = (b64: string): ArrayBuffer => {
-  const pad = countPadding(b64);
-  const s = b64.slice(0, b64.length - pad);
+  const norm = b64.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+  const pad = countPadding(norm);
+  const s = norm.slice(0, norm.length - pad);
   const out = new Uint8Array(Math.floor(s.length * 3 / 4));
   let j = 0;
   for (let i = 0; i < s.length; i += 4) {

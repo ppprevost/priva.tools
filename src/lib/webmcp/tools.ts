@@ -4,7 +4,7 @@ import { runWorker, b64ToBuffer, bufferToB64 } from './run-worker';
 type Tool = {
   name: string;
   description: string;
-  inputSchema: Record<string, z.ZodTypeAny>;
+  inputSchema: z.ZodObject<z.ZodRawShape>;
   handler: (input: Record<string, unknown>) => Promise<unknown>;
 };
 
@@ -17,18 +17,19 @@ const singleFileResult = async (
   transfer: Transferable[],
 ) => {
   const { result, filename: outName } = await runWorker(factory, msg, transfer);
-  return { filename: outName, data: bufferToB64(result as ArrayBuffer) };
+  if (!(result instanceof ArrayBuffer)) throw new Error(`Expected ArrayBuffer, got ${typeof result}`);
+  return { filename: outName, data: bufferToB64(result) };
 };
 
 export const tools: Tool[] = [
   {
     name: 'compress_pdf',
     description: 'Reduce PDF file size. Returns a base64-encoded compressed PDF.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       stripMetadata: z.boolean().optional().default(true).describe('Strip metadata (default: true)'),
-    },
+    }),
     handler: async ({ file, filename: name, stripMetadata }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -41,9 +42,9 @@ export const tools: Tool[] = [
   {
     name: 'merge_pdf',
     description: 'Merge multiple PDFs into one. Returns a base64-encoded merged PDF.',
-    inputSchema: {
+    inputSchema: z.object({
       files: z.array(fileB64).min(2).describe('Array of base64-encoded PDFs to merge'),
-    },
+    }),
     handler: async ({ files }) => {
       const buffers = (files as string[]).map(b64ToBuffer);
       return singleFileResult(
@@ -56,11 +57,11 @@ export const tools: Tool[] = [
   {
     name: 'split_pdf',
     description: 'Split a PDF into separate files by page ranges (e.g. "1-3,5,7-9").',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       pageRanges: z.string().optional().describe('Page ranges e.g. "1-3,5,7-9". Empty = one file per page.'),
-    },
+    }),
     handler: async ({ file, filename: name, pageRanges }) => {
       const buf = b64ToBuffer(file as string);
       const { result } = await runWorker(
@@ -77,10 +78,10 @@ export const tools: Tool[] = [
   {
     name: 'jpg_to_pdf',
     description: 'Convert images (JPG, PNG, WebP) to a PDF document.',
-    inputSchema: {
+    inputSchema: z.object({
       files: z.array(fileB64).min(1).describe('Array of base64-encoded images'),
       filenames: z.array(z.string()).describe('Corresponding filenames (used to detect mime type)'),
-    },
+    }),
     handler: async ({ files, filenames }) => {
       const buffers = (files as string[]).map(b64ToBuffer);
       return singleFileResult(
@@ -93,7 +94,7 @@ export const tools: Tool[] = [
   {
     name: 'protect_pdf',
     description: 'Password-protect a PDF with AES-256 encryption.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       userPassword: z.string().describe('Password required to open the PDF'),
@@ -101,7 +102,7 @@ export const tools: Tool[] = [
       allowPrint: z.boolean().optional().default(true),
       allowModify: z.boolean().optional().default(false),
       allowExtract: z.boolean().optional().default(false),
-    },
+    }),
     handler: async ({ file, filename: name, ...options }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -114,11 +115,11 @@ export const tools: Tool[] = [
   {
     name: 'unlock_pdf',
     description: 'Remove password protection from an encrypted PDF.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       password: z.string().describe('Password to unlock the PDF'),
-    },
+    }),
     handler: async ({ file, filename: name, password }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -131,7 +132,7 @@ export const tools: Tool[] = [
   {
     name: 'sign_pdf',
     description: 'Embed a signature image into a PDF at given coordinates.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       placements: z.array(z.object({
@@ -142,7 +143,7 @@ export const tools: Tool[] = [
         height: z.number().describe('Height in PDF points'),
         imageData: z.string().describe('Base64-encoded PNG/JPEG signature image'),
       })).min(1).describe('Signature placements'),
-    },
+    }),
     handler: async ({ file, filename: name, placements }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -155,9 +156,9 @@ export const tools: Tool[] = [
   {
     name: 'get_form_fields',
     description: 'List all AcroForm fields in a PDF (name, type, current value).',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
-    },
+    }),
     handler: async ({ file }) => {
       const buf = b64ToBuffer(file as string);
       const { result } = await runWorker(
@@ -171,11 +172,11 @@ export const tools: Tool[] = [
   {
     name: 'edit_pdf',
     description: 'Apply edits to a PDF: add text, highlight, fill forms, overlay text. Returns base64-encoded result.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       ops: z.array(z.record(z.unknown())).describe('Array of edit operations (see @ppprevost/pdf-wasm for schema)'),
-    },
+    }),
     handler: async ({ file, filename: name, ops }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -188,12 +189,12 @@ export const tools: Tool[] = [
   {
     name: 'compress_image',
     description: 'Reduce image file size (JPG/PNG/WebP). Returns base64-encoded compressed image.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       quality: z.number().min(0).max(1).optional().default(0.8).describe('Quality 0-1 (default 0.8)'),
       type: z.enum(['image/jpeg', 'image/png', 'image/webp']).optional().default('image/jpeg'),
-    },
+    }),
     handler: async ({ file, filename: name, quality, type }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -206,14 +207,14 @@ export const tools: Tool[] = [
   {
     name: 'resize_image',
     description: 'Resize an image to specified dimensions.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       width: z.number().positive().describe('Target width in pixels'),
       height: z.number().positive().describe('Target height in pixels'),
       maintainAspectRatio: z.boolean().optional().default(true),
       type: z.enum(['image/jpeg', 'image/png', 'image/webp']).optional().default('image/jpeg'),
-    },
+    }),
     handler: async ({ file, filename: name, width, height, maintainAspectRatio, type }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -226,12 +227,12 @@ export const tools: Tool[] = [
   {
     name: 'convert_to_jpg',
     description: 'Convert an image (PNG, WebP, HEIC, BMP, GIF) to JPG format.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       quality: z.number().min(0).max(1).optional().default(0.92),
-      type: z.string().optional().default('image/png').describe('Source mime type'),
-    },
+      type: z.enum(['image/jpeg', 'image/png', 'image/webp']).optional().default('image/png').describe('Source mime type'),
+    }),
     handler: async ({ file, filename: name, quality, type }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -244,7 +245,7 @@ export const tools: Tool[] = [
   {
     name: 'crop_image',
     description: 'Crop an image to given coordinates and dimensions.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
       x: z.number().min(0).describe('Left offset in pixels'),
@@ -252,7 +253,7 @@ export const tools: Tool[] = [
       width: z.number().positive().describe('Crop width in pixels'),
       height: z.number().positive().describe('Crop height in pixels'),
       type: z.enum(['image/jpeg', 'image/png', 'image/webp']).optional().default('image/jpeg'),
-    },
+    }),
     handler: async ({ file, filename: name, x, y, width, height, type }) => {
       const buf = b64ToBuffer(file as string);
       return singleFileResult(
@@ -265,10 +266,10 @@ export const tools: Tool[] = [
   {
     name: 'remove_background',
     description: 'Remove the background from an image using AI. Returns a base64-encoded PNG with transparent background.',
-    inputSchema: {
+    inputSchema: z.object({
       file: fileB64,
       filename,
-    },
+    }),
     handler: async ({ file, filename: name }) => {
       const { removeBackground } = await import('@imgly/background-removal');
       const buf = b64ToBuffer(file as string);
