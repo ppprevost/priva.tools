@@ -1,0 +1,52 @@
+# Priva.TOOLS
+
+> Free PDF and image tools that run 100% in the browser. No file uploads, no server processing, no tracking. Everything is processed locally using WebAssembly.
+
+Priva.TOOLS is an open-source suite of privacy-first file tools. All processing happens client-side — your files never leave your device.
+
+## AI Agent Integration
+
+Priva.TOOLS implements the WebMCP protocol (`navigator.modelContext`). AI agents running in a compatible browser (Chrome 146+) can call the tools below directly without any API key or authentication.
+
+Available tools via WebMCP:
+- `compress_pdf` — Reduce PDF file size
+- `merge_pdf` — Merge multiple PDFs into one
+- `split_pdf` — Split a PDF by page ranges
+- `jpg_to_pdf` — Convert images (JPG, PNG, WebP) to PDF
+- `protect_pdf` — Password-protect a PDF with AES-256 encryption
+- `unlock_pdf` — Remove password protection from a PDF
+- `sign_pdf` — Embed a signature image into a PDF
+- `get_form_fields` — List AcroForm fields in a PDF
+- `edit_pdf` — Add text, highlights, and fill forms in a PDF
+- `compress_image` — Reduce image file size (JPG/PNG/WebP)
+- `resize_image` — Resize an image to specified dimensions
+- `convert_to_jpg` — Convert PNG/WebP/HEIC to JPG
+- `crop_image` — Crop an image to given coordinates
+- `remove_background` — Remove image background using AI (runs locally via ONNX)
+
+## PDF Tools
+
+- [Compress PDF](https://priva.tools/compress-pdf): Reduce PDF file size without losing quality. Removes redundant metadata and optimizes internal structure.
+- [Merge PDF](https://priva.tools/merge-pdf): Combine multiple PDF files into a single document. Preserves all pages and content.
+- [Split PDF](https://priva.tools/split-pdf): Split a PDF into separate files. Supports custom page ranges (e.g. "1-3,5,7-9").
+- [JPG to PDF](https://priva.tools/jpg-to-pdf): Convert JPG, PNG, or WebP images into a PDF document.
+- [Protect PDF](https://priva.tools/protect-pdf): Add AES-256 password protection to any PDF. Set user and owner passwords and control permissions.
+- [Unlock PDF](https://priva.tools/unlock-pdf): Remove password protection from an encrypted PDF.
+- [Sign PDF](https://priva.tools/sign-pdf): Embed a signature image into a PDF at custom coordinates. Supports multiple placements across pages.
+- [Edit PDF](https://priva.tools/edit-pdf): Add text annotations, highlights, fill AcroForm fields, and overlay text on any PDF.
+
+## Image Tools
+
+- [Compress Image](https://priva.tools/compress-image): Reduce image file size (JPG, PNG, WebP). Adjustable quality setting.
+- [Resize Image](https://priva.tools/resize-image): Resize an image to specified dimensions with optional aspect ratio preservation.
+- [Convert to JPG](https://priva.tools/convert-to-jpg): Convert PNG, WebP, HEIC, BMP, or GIF images to JPG format.
+- [Crop Image](https://priva.tools/crop-image): Crop an image to a specific region by coordinates and dimensions.
+- [Remove Background](https://priva.tools/remove-background): AI-powered background removal. Returns a PNG with transparent background. The ONNX model runs entirely in the browser.
+
+## Technical Details
+
+- Processing engine: WebAssembly (Rust via wasm-pack, qpdf, lopdf)
+- No server, no upload, no account required
+- Works offline after initial page load (service worker)
+- Source code: https://github.com/ppprevost/priva.tools
+- License: MIT

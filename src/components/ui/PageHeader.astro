@@ -1,0 +1,8 @@
+---
+type Props = { title: string; subtitle: string; spacing?: string };
+const { title, subtitle, spacing = 'mb-14' } = Astro.props;
+---
+<div class={`text-center ${spacing}`}>
+  <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">{title}</h1>
+  <p class="text-lg text-slate-500 mt-3">{subtitle}</p>
+</div>

@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import FeatureItem from '../components/ui/FeatureItem.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
 import { Heart } from 'lucide-react';
 
 const PAYPAL_LINK = import.meta.env.PUBLIC_PAYPAL_LINK;
@@ -12,10 +14,7 @@ const showDonation = !!PAYPAL_LINK;
 <BaseLayout title="Support Priva.TOOLS - Help Keep Free Tools Alive" description="Priva.TOOLS is free, ad-free, and tracker-free. Support the project with a donation to help cover server costs and development.">
   <Header />
   <main class="max-w-3xl mx-auto px-6 py-12 md:py-20">
-    <div class="text-center mb-14">
-      <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Support Priva.TOOLS</h1>
-      <p class="text-lg text-slate-500 mt-3">Help keep free, private tools alive.</p>
-    </div>
+    <PageHeader title="Support Priva.TOOLS" subtitle="Help keep free, private tools alive." />
 
     <div class="space-y-10 text-slate-600 font-medium leading-relaxed">
       <section>
@@ -24,7 +23,7 @@ const showDonation = !!PAYPAL_LINK;
 
       {showDonation && (
         <section>
-          <h2 class="text-2xl font-black text-slate-900 mb-4">Why support?</h2>
+          <SectionHeading>Why support?</SectionHeading>
           <div class="space-y-4">
             <div class="p-4 rounded-xl bg-slate-50 border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)]">
               <FeatureItem title="Server costs" description="Hosting, domain, and CDN costs add up. Your support helps keep the site fast and available for everyone." />
@@ -53,7 +52,7 @@ const showDonation = !!PAYPAL_LINK;
       )}
 
       <section>
-        <h2 class="text-2xl font-black text-slate-900 mb-4">Other ways to help</h2>
+        <SectionHeading>Other ways to help</SectionHeading>
         <ul class="space-y-3">
           <li class="flex items-start gap-2">
             <span class="text-indigo-500 font-bold mt-0.5">1.</span>

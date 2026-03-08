@@ -1,20 +1,8 @@
 ---
+import GithubIcon from '../ui/GithubIcon.astro';
+import { pdfLinks, imageLinks } from '../../lib/nav-links';
+
 const showBlog = !!process.env.DATABASE_URL;
-
-const pdfLinks = [
-  { href: '/compress-pdf', label: 'Compress PDF' },
-  { href: '/merge-pdf', label: 'Merge PDF' },
-  { href: '/split-pdf', label: 'Split PDF' },
-  { href: '/jpg-to-pdf', label: 'JPG to PDF' },
-];
-
-const imageLinks = [
-  { href: '/compress-image', label: 'Compress Image' },
-  { href: '/resize-image', label: 'Resize Image' },
-  { href: '/convert-to-jpg', label: 'Convert to JPG' },
-  { href: '/crop-image', label: 'Crop Image' },
-  { href: '/remove-background', label: 'Remove BG' },
-];
 ---
 
 <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b-[3px] border-slate-900">
@@ -52,6 +40,9 @@ const imageLinks = [
         </div>
       </div>
       {showBlog && <a href="/blog" class="font-bold text-slate-700 hover:text-indigo-600 transition-colors">Blog</a>}
+      <a href="https://github.com/ppprevost/priva.tools" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-slate-500 hover:text-slate-900 transition-colors">
+        <GithubIcon size={22} />
+      </a>
     </div>
 
     <button
@@ -83,6 +74,10 @@ const imageLinks = [
         ))}
       </div>
       {showBlog && <a href="/blog" class="block px-3 py-2 rounded-lg font-bold text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Blog</a>}
+      <a href="https://github.com/ppprevost/priva.tools" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+        <GithubIcon size={16} />
+        GitHub
+      </a>
     </div>
   </div>
 </header>

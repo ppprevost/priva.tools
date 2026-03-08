@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import ContactForm from '../components/tools/ContactForm';
+import PageHeader from '../components/ui/PageHeader.astro';
 
 const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY ?? '';
 ---
@@ -10,10 +11,7 @@ const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY ?? '';
 <BaseLayout title="Contact - Priva.TOOLS" description="Get in touch with the Priva.TOOLS team. Questions, feedback, or partnership inquiries.">
   <Header />
   <main class="max-w-2xl mx-auto px-6 py-12 md:py-20">
-    <div class="text-center mb-10">
-      <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Get in touch</h1>
-      <p class="text-lg text-slate-500 mt-3">Question, feedback, or just want to say hi? Drop us a message.</p>
-    </div>
+    <PageHeader title="Get in touch" subtitle="Question, feedback, or just want to say hi? Drop us a message." spacing="mb-10" />
     <div class="bg-white rounded-[var(--radius-card)] border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-lg)] p-6 md:p-10">
       <ContactForm client:load turnstileSiteKey={turnstileSiteKey} />
     </div>

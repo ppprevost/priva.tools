@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import FeatureItem from '../components/ui/FeatureItem.astro';
+import PageHeader from '../components/ui/PageHeader.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
 
 const showSupport = !!import.meta.env.PUBLIC_PAYPAL_LINK;
 ---
@@ -10,19 +12,16 @@ const showSupport = !!import.meta.env.PUBLIC_PAYPAL_LINK;
 <BaseLayout title="About - Priva.TOOLS" description="Priva.TOOLS is a free suite of PDF and image tools that process everything in your browser. No uploads, no tracking, no accounts.">
   <Header />
   <main class="max-w-3xl mx-auto px-6 py-12 md:py-20">
-    <div class="text-center mb-14">
-      <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">About Priva.TOOLS</h1>
-      <p class="text-lg text-slate-500 mt-3">Free PDF & image tools that respect your privacy.</p>
-    </div>
+    <PageHeader title="About Priva.TOOLS" subtitle="Free PDF & image tools that respect your privacy." />
 
     <div class="space-y-10 text-slate-600 font-medium leading-relaxed">
       <section>
-        <h2 class="text-2xl font-black text-slate-900 mb-4">What is Priva.TOOLS?</h2>
+        <SectionHeading>What is Priva.TOOLS?</SectionHeading>
         <p>Priva.TOOLS is a collection of free online tools for working with PDFs and images. Compress PDFs, merge documents, resize images, remove backgrounds, and more. Every tool runs entirely in your browser using WebAssembly and JavaScript.</p>
       </section>
 
       <section>
-        <h2 class="text-2xl font-black text-slate-900 mb-4">How it works</h2>
+        <SectionHeading>How it works</SectionHeading>
         <p class="mb-4">Unlike most online tools, Priva.TOOLS never uploads your files to a server. Here's what happens when you use a tool:</p>
         <ol class="list-decimal list-inside space-y-2">
           <li>You select a file from your device.</li>
@@ -33,7 +32,7 @@ const showSupport = !!import.meta.env.PUBLIC_PAYPAL_LINK;
       </section>
 
       <section>
-        <h2 class="text-2xl font-black text-slate-900 mb-4">Why client-side processing?</h2>
+        <SectionHeading>Why client-side processing?</SectionHeading>
         <div class="grid md:grid-cols-2 gap-6">
           <FeatureItem title="Privacy by design" description="Your files are never exposed to a third-party server. Confidential documents, personal photos, sensitive contracts: they all stay private." />
           <FeatureItem title="No accounts, no limits" description="No sign-up required. No daily limits. No premium upsells. Every tool is free and unlimited." />
@@ -43,13 +42,32 @@ const showSupport = !!import.meta.env.PUBLIC_PAYPAL_LINK;
       </section>
 
       <section>
-        <h2 class="text-2xl font-black text-slate-900 mb-4">No tracking</h2>
+        <SectionHeading>No tracking</SectionHeading>
         <p>Priva.TOOLS does not use cookies, analytics trackers, or any form of user tracking. There are no ads, no affiliate links, no data collection. We believe tools should just work without compromising your privacy.</p>
+      </section>
+
+      <section>
+        <SectionHeading>AI agent support (WebMCP)</SectionHeading>
+        <p class="mb-4">Priva.TOOLS implements the <strong>WebMCP protocol</strong>, a browser standard that lets AI agents call website tools directly. All 14 tools are exposed via <code class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono">navigator.modelContext</code> and can be invoked by any compatible AI agent without an API key, an account, or a server.</p>
+        <p class="mb-4">This means that in a WebMCP-compatible browser (Chrome 146+), an AI assistant like Claude or Gemini can compress a PDF, remove an image background, or fill a form field on your behalf — entirely client-side, with zero data leaving your device.</p>
+        <div class="bg-slate-50 border-[2px] border-slate-200 rounded-xl p-4 text-sm font-mono text-slate-600 overflow-x-auto">
+          <p class="text-slate-400 mb-1">// Tools available to AI agents via WebMCP</p>
+          <p>compress_pdf, merge_pdf, split_pdf, jpg_to_pdf,</p>
+          <p>protect_pdf, unlock_pdf, sign_pdf, edit_pdf,</p>
+          <p>get_form_fields, compress_image, resize_image,</p>
+          <p>convert_to_jpg, crop_image, remove_background</p>
+        </div>
+        <p class="mt-4">WebMCP is an open W3C incubation. The source code for the Priva.TOOLS integration is available on <a href="https://github.com/ppprevost/priva.tools" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-semibold">GitHub</a>.</p>
+      </section>
+
+      <section>
+        <SectionHeading>Open source</SectionHeading>
+        <p>Priva.TOOLS is open source. The full source code, including the Rust/WASM modules, workers, and UI components, is available on <a href="https://github.com/ppprevost/priva.tools" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-semibold">GitHub</a> under the MIT license.</p>
       </section>
 
       {showSupport && (
         <section class="mt-4 p-6 rounded-2xl bg-indigo-50 border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)] text-center">
-          <h2 class="text-2xl font-black text-slate-900 mb-3">Support Priva.TOOLS</h2>
+          <SectionHeading>Support Priva.TOOLS</SectionHeading>
           <p class="mb-4">If you find these tools useful, consider supporting the project.</p>
           <a href="/support" class="inline-block px-6 py-3 bg-indigo-500 text-white font-bold rounded-xl border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all">
             Learn how to help
