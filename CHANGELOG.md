@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/ppprevost/priva.tools/compare/v1.0.0...v1.1.0) (2026-03-08)
+
+
+### Features
+
+* GitHub links, llms.txt, WebMCP SEO content ([#20](https://github.com/ppprevost/priva.tools/issues/20)) ([0652702](https://github.com/ppprevost/priva.tools/commit/0652702f62ceba7b34dc7d236a7612055f301323))
+
 ## 1.0.0 (2026-03-08)
 
 
