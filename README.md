@@ -23,6 +23,10 @@ PDF and image tools powered by Web Workers and WebAssembly, all client-side:
 | Merge PDF | `/merge-pdf` |
 | Split PDF | `/split-pdf` |
 | JPG to PDF | `/jpg-to-pdf` |
+| Protect PDF | `/protect-pdf` |
+| Unlock PDF | `/unlock-pdf` |
+| Sign PDF | `/sign-pdf` |
+| Edit PDF | `/edit-pdf` |
 | Compress Image | `/compress-image` |
 | Resize Image | `/resize-image` |
 | Crop Image | `/crop-image` |
@@ -30,6 +34,19 @@ PDF and image tools powered by Web Workers and WebAssembly, all client-side:
 | Remove Background | `/remove-background` |
 
 Other pages: `/blog`, `/about`, `/contact`, `/support`, `/privacy`
+
+## AI agent support (WebMCP)
+
+Priva.TOOLS implements the [WebMCP protocol](https://developer.chrome.com/blog/webmcp-epp), a W3C incubation that lets AI agents call website tools directly via `navigator.modelContext`. All 14 tools are registered at page load and callable by any compatible browser agent (Chrome 146+) without an API key or account.
+
+```
+src/lib/webmcp/tools.ts           — tool definitions (Zod schema + handler)
+src/components/WebMCPProvider.tsx  — registers tools via navigator.modelContext
+```
+
+Each tool accepts base64-encoded file input, processes it client-side via a Web Worker, and returns a base64-encoded result. Input schemas are validated at runtime with Zod.
+
+A [`/llms.txt`](https://priva.tools/llms.txt) file at the root lists all tools for LLM discovery.
 
 ## Tech stack
 
