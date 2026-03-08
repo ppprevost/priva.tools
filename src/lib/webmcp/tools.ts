@@ -174,9 +174,7 @@ export const tools: Tool[] = [
     inputSchema: {
       file: fileB64,
       filename,
-      ops: z.array(z.object({
-        type: z.enum(['freetext', 'highlight', 'text_overlay', 'form_text', 'form_checkbox']),
-      }).passthrough()).describe('Array of edit operations (see @ppprevost/pdf-wasm for schema)'),
+      ops: z.array(z.record(z.unknown())).describe('Array of edit operations (see @ppprevost/pdf-wasm for schema)'),
     },
     handler: async ({ file, filename: name, ops }) => {
       const buf = b64ToBuffer(file as string);
