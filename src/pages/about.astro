@@ -47,6 +47,25 @@ const showSupport = !!import.meta.env.PUBLIC_PAYPAL_LINK;
         <p>Priva.TOOLS does not use cookies, analytics trackers, or any form of user tracking. There are no ads, no affiliate links, no data collection. We believe tools should just work without compromising your privacy.</p>
       </section>
 
+      <section>
+        <h2 class="text-2xl font-black text-slate-900 mb-4">AI agent support (WebMCP)</h2>
+        <p class="mb-4">Priva.TOOLS implements the <strong>WebMCP protocol</strong>, a browser standard that lets AI agents call website tools directly. All 14 tools are exposed via <code class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono">navigator.modelContext</code> and can be invoked by any compatible AI agent without an API key, an account, or a server.</p>
+        <p class="mb-4">This means that in a WebMCP-compatible browser (Chrome 146+), an AI assistant like Claude or Gemini can compress a PDF, remove an image background, or fill a form field on your behalf — entirely client-side, with zero data leaving your device.</p>
+        <div class="bg-slate-50 border-[2px] border-slate-200 rounded-xl p-4 text-sm font-mono text-slate-600 overflow-x-auto">
+          <p class="text-slate-400 mb-1">// Tools available to AI agents via WebMCP</p>
+          <p>compress_pdf, merge_pdf, split_pdf, jpg_to_pdf,</p>
+          <p>protect_pdf, unlock_pdf, sign_pdf, edit_pdf,</p>
+          <p>get_form_fields, compress_image, resize_image,</p>
+          <p>convert_to_jpg, crop_image, remove_background</p>
+        </div>
+        <p class="mt-4">WebMCP is an open W3C incubation. The source code for the Priva.TOOLS integration is available on <a href="https://github.com/ppprevost/priva.tools" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-semibold">GitHub</a>.</p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-black text-slate-900 mb-4">Open source</h2>
+        <p>Priva.TOOLS is open source. The full source code, including the Rust/WASM modules, workers, and UI components, is available on <a href="https://github.com/ppprevost/priva.tools" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline font-semibold">GitHub</a> under the MIT license.</p>
+      </section>
+
       {showSupport && (
         <section class="mt-4 p-6 rounded-2xl bg-indigo-50 border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)] text-center">
           <h2 class="text-2xl font-black text-slate-900 mb-3">Support Priva.TOOLS</h2>
