@@ -32,6 +32,12 @@ importers:
       '@imgly/background-removal':
         specifier: ^1.7.0
         version: 1.7.0(onnxruntime-web@1.21.0)
+      '@mcp-b/global':
+        specifier: ^2.1.0
+        version: 2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)
+      '@mcp-b/react-webmcp':
+        specifier: ^2.1.0
+        version: 2.1.0(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.0.2
@@ -98,6 +104,9 @@ importers:
       upng-js:
         specifier: ^2.1.0
         version: 2.1.0
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@eslint-react/eslint-plugin':
         specifier: ^2.13.0
@@ -301,6 +310,9 @@ packages:
   '@capsizecss/unpack@4.0.0':
     resolution: {integrity: sha512-VERIM64vtTP1C4mxQ5thVT9fK0apjPFobqybMtA1UdUujWka24ERHbRHFGmpbbhp73MhV+KSsHQH9C6uOTdEQA==}
     engines: {node: '>=18'}
+
+  '@cfworker/json-schema@4.1.1':
+    resolution: {integrity: sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og==}
 
   '@csstools/color-helpers@6.0.2':
     resolution: {integrity: sha512-LMGQLS9EuADloEFkcTBR3BwV/CGHV7zyDxVRtVDTwdI2Ca4it0CCVTT9wCkxSgokjE5Ho41hEPgb8OEUwoXr6Q==}
@@ -932,6 +944,44 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@mcp-b/global@2.1.0':
+    resolution: {integrity: sha512-LGIf7ruzuTAD69Nv7lYJJ2F0kba7FaIwO5IT0YMpEhwg/H6QPqHkF8xQIxzku4j6MZrPas97jFGYFAsFB8W8ug==}
+    engines: {node: '>=18'}
+
+  '@mcp-b/react-webmcp@2.1.0':
+    resolution: {integrity: sha512-P6o6qhHGpbjw9MKERRAGy4Ac4Fa6K7wLmfbP1jgPONLuNHUQOVYv4WLzwcO3KkGAethsdBChqVY1iwzQo7V0iQ==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+      zod: ^3.25 || ^4.0
+      zod-to-json-schema: ^3.25.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
+      zod-to-json-schema:
+        optional: true
+
+  '@mcp-b/transports@2.1.0':
+    resolution: {integrity: sha512-dWTVLjkJtCafHw1SOm93cHt84PvC+fgXSHPUySJlRXTaOHorohgifpLhhxx9XNoYlpNzjwDir53XSEtQXq247w==}
+
+  '@mcp-b/webmcp-polyfill@2.1.0':
+    resolution: {integrity: sha512-AKvdv49WRNvzrmgRo+3M3/RPriudc/fyfkRwaC6gaIpReleNUnRFe55W2DpTu9hiY8gdMDgIF4Qag7YrGR/JAQ==}
+    engines: {node: '>=18'}
+
+  '@mcp-b/webmcp-ts-sdk@2.1.0':
+    resolution: {integrity: sha512-eJyD0fy660bsiMLrnVJOGTNcbkuyGGoqSX5sOBjlVOi+I9Rcd5TFJZSD2aznNqJPG2ubt1lZg4hCqGt/Hec/EQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25 || ^4.0
+      zod-to-json-schema: ^3.25.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
+      zod-to-json-schema:
+        optional: true
+
+  '@mcp-b/webmcp-types@2.1.0':
+    resolution: {integrity: sha512-49PRpE8LiLKtfEbM04E4qKnXfy+PEjVAqE1Z7PAykdw9YyBV0fRxEHVhX/KJfyVCatxgZIoMZChdX8uz7HpRMQ==}
 
   '@napi-rs/canvas-android-arm64@0.1.95':
     resolution: {integrity: sha512-SqTh0wsYbetckMXEvHqmR7HKRJujVf1sYv1xdlhkifg6TlCSysz1opa49LlS3+xWuazcQcfRfmhA07HxxxGsAA==}
@@ -3894,6 +3944,9 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
+  zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
@@ -4128,6 +4181,8 @@ snapshots:
   '@capsizecss/unpack@4.0.0':
     dependencies:
       fontkitten: 1.0.2
+
+  '@cfworker/json-schema@4.1.1': {}
 
   '@csstools/color-helpers@6.0.2': {}
 
@@ -4375,7 +4430,7 @@ snapshots:
       eslint: 10.0.2(jiti@2.6.1)
       ts-pattern: 5.9.0
       typescript: 5.9.3
-      zod: 3.25.76
+      zod: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
@@ -4578,6 +4633,59 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@mcp-b/global@2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)':
+    dependencies:
+      '@mcp-b/transports': 2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))
+      '@mcp-b/webmcp-polyfill': 2.1.0
+      '@mcp-b/webmcp-ts-sdk': 2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)
+      '@mcp-b/webmcp-types': 2.1.0
+    transitivePeerDependencies:
+      - zod
+      - zod-to-json-schema
+
+  '@mcp-b/react-webmcp@2.1.0(react@19.2.4)(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)':
+    dependencies:
+      '@mcp-b/global': 2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)
+      '@mcp-b/transports': 2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))
+      '@mcp-b/webmcp-polyfill': 2.1.0
+      '@mcp-b/webmcp-ts-sdk': 2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)
+      '@mcp-b/webmcp-types': 2.1.0
+      react: 19.2.4
+    optionalDependencies:
+      zod: 4.3.6
+      zod-to-json-schema: 3.25.1(zod@4.3.6)
+
+  '@mcp-b/transports@2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))':
+    dependencies:
+      '@mcp-b/webmcp-ts-sdk': 2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@3.25.76)
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - zod-to-json-schema
+
+  '@mcp-b/webmcp-polyfill@2.1.0':
+    dependencies:
+      '@cfworker/json-schema': 4.1.1
+      '@mcp-b/webmcp-types': 2.1.0
+      '@standard-schema/spec': 1.1.0
+
+  '@mcp-b/webmcp-ts-sdk@2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@mcp-b/webmcp-polyfill': 2.1.0
+      '@mcp-b/webmcp-types': 2.1.0
+    optionalDependencies:
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.1(zod@4.3.6)
+
+  '@mcp-b/webmcp-ts-sdk@2.1.0(zod-to-json-schema@3.25.1(zod@4.3.6))(zod@4.3.6)':
+    dependencies:
+      '@mcp-b/webmcp-polyfill': 2.1.0
+      '@mcp-b/webmcp-types': 2.1.0
+    optionalDependencies:
+      zod: 4.3.6
+      zod-to-json-schema: 3.25.1(zod@4.3.6)
+
+  '@mcp-b/webmcp-types@2.1.0': {}
 
   '@napi-rs/canvas-android-arm64@0.1.95':
     optional: true
@@ -7836,11 +7944,18 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
+  zod-to-json-schema@3.25.1(zod@4.3.6):
+    dependencies:
+      zod: 4.3.6
+    optional: true
+
   zod-to-ts@1.2.0(typescript@5.9.3)(zod@3.25.76):
     dependencies:
       typescript: 5.9.3
       zod: 3.25.76
 
   zod@3.25.76: {}
+
+  zod@4.3.6: {}
 
   zwitch@2.0.4: {}
