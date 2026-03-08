@@ -21,7 +21,7 @@ describe('b64ToBuffer / bufferToB64', () => {
   it('bufferToB64 returns a valid base64 string', () => {
     const buf = new Uint8Array([72, 101, 108, 108, 111]).buffer;
     const b64 = bufferToB64(buf);
-    expect(b64).toBe(btoa('Hello'));
+    expect(b64).toBe('SGVsbG8=');
   });
 
   it('b64ToBuffer accepts URL-safe base64 (- and _)', () => {
