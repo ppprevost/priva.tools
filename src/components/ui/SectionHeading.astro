@@ -1,0 +1,7 @@
+---
+type Props = { as?: 'h2' | 'h3'; class?: string };
+const { as: Tag = 'h2', class: className = '' } = Astro.props;
+---
+<Tag class={`text-2xl font-black text-slate-900 mb-4 ${className}`.trim()}>
+  <slot />
+</Tag>
