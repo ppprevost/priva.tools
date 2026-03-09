@@ -29,7 +29,7 @@ export async function insertComment(toolSlug: string, name: string, content: str
 
 export async function getAllComments(): Promise<Comment[]> {
   const rows = await sql()`
-    SELECT id, tool_slug, author_name, content, approved, created_at
+    SELECT id, tool_slug, author_name, content, ip_hash, approved, created_at
     FROM comments ORDER BY created_at DESC LIMIT 100
   `;
   return rows as Comment[];
