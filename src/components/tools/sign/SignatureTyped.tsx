@@ -35,7 +35,7 @@ const ensureFontsLoaded = () => {
 export default function SignatureTyped({ onConfirm }: Readonly<SignatureTypedProps>) {
   use(ensureFontsLoaded());
   const [text, setText] = useState('');
-  const [selectedFont, setSelectedFont] = useState(FONTS[0].name);
+  const [selectedFont, setSelectedFont] = useState<typeof FONTS[number]['name']>(FONTS[0].name);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const renderPreview = useCallback(() => {

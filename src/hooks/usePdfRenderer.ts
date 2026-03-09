@@ -88,7 +88,7 @@ export function usePdfRenderer(): UsePdfRendererReturn {
       renderTaskRef.current.cancel();
     }
 
-    const renderTask = page.render({ canvasContext: ctx, viewport: scaledViewport });
+    const renderTask = page.render({ canvasContext: ctx, viewport: scaledViewport, canvas });
     renderTaskRef.current = renderTask;
     try {
       await renderTask.promise;

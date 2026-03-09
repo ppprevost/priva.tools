@@ -81,7 +81,7 @@ describe('signPdf', () => {
     const pdfBytes = await createTestPdf();
     const png = create1x1Png();
 
-    const result = await signPdf(pdfBytes.buffer, [
+    const result = await signPdf(pdfBytes.buffer as ArrayBuffer, [
       { pageIndex: 0, xPdf: 100, yPdf: 700, widthPdf: 150, heightPdf: 50, imageBytes: png },
     ]);
 
@@ -96,7 +96,7 @@ describe('signPdf', () => {
     const pdfBytes = await createTestPdf();
     const png = create1x1Png();
 
-    const result = await signPdf(pdfBytes.buffer, [
+    const result = await signPdf(pdfBytes.buffer as ArrayBuffer, [
       { pageIndex: 0, xPdf: 100, yPdf: 700, widthPdf: 150, heightPdf: 50, imageBytes: png },
       { pageIndex: 1, xPdf: 200, yPdf: 600, widthPdf: 80, heightPdf: 40, imageBytes: png },
     ]);
@@ -109,7 +109,7 @@ describe('signPdf', () => {
   it('returns valid PDF with no placements', async () => {
     const pdfBytes = await createTestPdf();
 
-    const result = await signPdf(pdfBytes.buffer, []);
+    const result = await signPdf(pdfBytes.buffer as ArrayBuffer, []);
 
     expect(result).toBeInstanceOf(Uint8Array);
     const doc = await PDFDocument.load(result);
@@ -121,7 +121,7 @@ describe('signPdf', () => {
     const png = create1x1Png();
     const onProgress = vi.fn();
 
-    await signPdf(pdfBytes.buffer, [
+    await signPdf(pdfBytes.buffer as ArrayBuffer, [
       { pageIndex: 0, xPdf: 100, yPdf: 700, widthPdf: 150, heightPdf: 50, imageBytes: png },
     ], onProgress);
 
@@ -137,7 +137,7 @@ describe('signPdf', () => {
     const pdfBytes = await createTestPdf();
     const png = create1x1Png();
 
-    const result = await signPdf(pdfBytes.buffer, [
+    const result = await signPdf(pdfBytes.buffer as ArrayBuffer, [
       { pageIndex: 99, xPdf: 100, yPdf: 700, widthPdf: 150, heightPdf: 50, imageBytes: png },
     ]);
 

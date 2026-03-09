@@ -7,10 +7,10 @@ let ready: Promise<void> | null = null;
 
 export const initEditPdf = (): Promise<void> => {
   if (!ready) {
-    ready = init(wasmUrl).catch((err: Error) => {
+    ready = init(wasmUrl).then(() => undefined).catch((err: Error) => {
       ready = null;
       return Promise.reject(err);
     });
   }
-  return ready;
+  return ready!;
 };
