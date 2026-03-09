@@ -14,7 +14,7 @@ self.onmessage = async (e: MessageEvent) => {
 
     self.postMessage(
       { type: 'result', result: serialized, filename: 'split' },
-      serialized.map((r) => r.data)
+      { transfer: serialized.map((r) => r.data) }
     );
   } catch (err) {
     self.postMessage({ type: 'error', error: (err as Error).message });

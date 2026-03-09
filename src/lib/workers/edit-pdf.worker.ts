@@ -27,7 +27,7 @@ self.onmessage = async (e: MessageEvent) => {
         result: out.buffer,
         filename: filename ?? 'document_edit.pdf',
       },
-      [out.buffer],
+      { transfer: [out.buffer] },
     );
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

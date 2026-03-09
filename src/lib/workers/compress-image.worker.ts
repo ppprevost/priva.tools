@@ -16,7 +16,7 @@ self.onmessage = async (e: MessageEvent) => {
 
     self.postMessage(
       { type: 'result', result: buffer, filename: outName },
-      [buffer]
+      { transfer: [buffer] }
     );
   } catch (err) {
     self.postMessage({ type: 'error', error: (err as Error).message });

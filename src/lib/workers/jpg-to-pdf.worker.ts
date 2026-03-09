@@ -19,7 +19,7 @@ self.onmessage = async (e: MessageEvent) => {
 
     self.postMessage(
       { type: 'result', result: result.buffer, filename: 'images.pdf' },
-      [result.buffer]
+      { transfer: [result.buffer] }
     );
   } catch (err) {
     self.postMessage({ type: 'error', error: (err as Error).message });
