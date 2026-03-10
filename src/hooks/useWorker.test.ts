@@ -67,7 +67,7 @@ describe('useWorker', () => {
 
     expect(mockWorker.postMessage).toHaveBeenCalledWith(
       { data: buffer, options: { quality: 80 }, filename: 'file.pdf' },
-      [buffer]
+      { transfer: [buffer] }
     );
   });
 
