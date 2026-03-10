@@ -2,7 +2,7 @@ import { sql } from './neon';
 import type { BlogPost } from '@/domain/entities';
 
 export async function getAllPosts(): Promise<BlogPost[]> {
-  const rows = await sql()`
+  const rows = await sql`
     SELECT slug, title, description, content, date::text, category, related_tools, og_image
     FROM blog_posts
     ORDER BY date DESC
@@ -11,7 +11,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const rows = await sql()`
+  const rows = await sql`
     SELECT slug, title, description, content, date::text, category, related_tools, og_image
     FROM blog_posts
     WHERE slug = ${slug}
@@ -22,7 +22,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
 
 export async function getPostsByTool(toolSlug: string): Promise<BlogPost[]> {
   try {
-    const rows = await sql()`
+    const rows = await sql`
       SELECT slug, title, description, content, date::text, category, related_tools, og_image
       FROM blog_posts
       WHERE ${toolSlug} = ANY(related_tools)

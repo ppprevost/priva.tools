@@ -1,3 +1,5 @@
+import { createHmac, timingSafeEqual as cryptoTimingSafeEqual, randomBytes } from 'crypto';
+
 export const JSON_HEADERS = { 'Content-Type': 'application/json' } as const;
 
 export const ALLOWED_ORIGINS = ['https://priva.tools', 'https://privatools.com', 'http://localhost:4321'];
@@ -18,12 +20,10 @@ export function requireDatabaseUrl(): Response | null {
 }
 
 export function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
+  const key = randomBytes(32);
+  const ha = createHmac('sha256', key).update(a).digest();
+  const hb = createHmac('sha256', key).update(b).digest();
+  return cryptoTimingSafeEqual(ha, hb);
 }
 
 export function isMobileClient(request: Request): boolean {
