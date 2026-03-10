@@ -27,9 +27,9 @@ export async function compressPdf(
   const pages = pdfDoc.getPages();
   for (let i = 0; i < pages.length; i++) {
     const page = pages[i];
-    const { MediaBox } = page.node.normalizedEntries();
-    if (MediaBox) {
-      page.node.set(page.node.context.obj('MediaBox'), MediaBox);
+    const mediaBox = page.node.MediaBox();
+    if (mediaBox) {
+      page.node.set(page.node.context.obj('MediaBox'), mediaBox);
     }
     onProgress?.(50 + (i / pages.length) * 30);
   }

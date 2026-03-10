@@ -52,7 +52,7 @@ export default function AnnotationLayer({ ops, pageIndex, dimensions, onUpdateOp
   return (
     <div className="absolute inset-0 pointer-events-none">
       {ops.map((op, index) => {
-        const k = `${op.type}-${op.page}-${index}`;
+        const k = `${op.type}-${'page' in op ? op.page : 'form'}-${index}`;
         if (op.type === 'freetext' && op.page === pageIndex) {
           return (
             <FreetextAnnot

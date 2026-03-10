@@ -2,7 +2,7 @@ import { notFoundError } from '@/domain/errors';
 import { getAllComments, setCommentApproval, deleteComment } from '@/infra/comment.repo';
 import type { Comment } from '@/domain/entities';
 
-export async function listAllComments(): Promise<Comment[]> {
+export async function listAllComments(): Promise<Omit<Comment, 'ip_hash'>[]> {
   return getAllComments();
 }
 

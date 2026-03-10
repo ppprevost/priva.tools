@@ -56,7 +56,7 @@ export function useWorker({ createWorker }: UseWorkerOptions) {
         worker.terminate();
       };
 
-      worker.postMessage({ data, options, filename }, [data]);
+      worker.postMessage({ data, options, filename }, { transfer: [data] });
     },
     [createWorker, reset]
   );

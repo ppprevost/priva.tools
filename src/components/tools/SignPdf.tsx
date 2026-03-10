@@ -131,7 +131,7 @@ export default function SignPdf() {
         );
 
         if (!p.dataUrl.startsWith('data:')) throw new Error(`Invalid signature data URL for placement ${p.id}`);
-        const buf = new Uint8Array(await fetch(p.dataUrl).then((r) => r.arrayBuffer()));
+        const buf = new Uint8Array(await fetch(p.dataUrl).then((r) => r.arrayBuffer()) as ArrayBuffer);
 
         return {
           pageIndex: p.pageIndex,

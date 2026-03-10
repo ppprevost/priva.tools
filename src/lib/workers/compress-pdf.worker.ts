@@ -10,7 +10,7 @@ self.onmessage = async (e: MessageEvent) => {
     });
     self.postMessage(
       { type: 'result', result: result.buffer, filename: (e.data.filename ?? 'compressed.pdf').replace(/\.pdf$/i, '_compressed.pdf') },
-      [result.buffer]
+      { transfer: [result.buffer] }
     );
   } catch (err) {
     self.postMessage({ type: 'error', error: (err as Error).message });

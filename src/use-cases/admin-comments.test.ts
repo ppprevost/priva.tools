@@ -11,7 +11,7 @@ import { getAllComments, setCommentApproval, deleteComment } from '@/infra/comme
 
 describe('listAllComments', () => {
   it('returns all comments', async () => {
-    const mockComments = [{ id: 1, tool_slug: 'compress-pdf', author_name: 'Alice', content: 'Great', approved: false, created_at: '2024-01-01' }];
+    const mockComments = [{ id: 1, tool_slug: 'compress-pdf', author_name: 'Alice', content: 'Great', ip_hash: 'abc', approved: false, created_at: '2024-01-01' }];
     vi.mocked(getAllComments).mockResolvedValue(mockComments);
 
     const result = await listAllComments();
