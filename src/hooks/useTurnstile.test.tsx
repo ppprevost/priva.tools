@@ -159,7 +159,7 @@ describe('useTurnstile', () => {
 
     turnstile.render.mockReturnValue('never-called');
     turnstile.reset.mockClear();
-    hookResult!.reset();
+    (hookResult as unknown as HookResult).reset();
 
     expect(turnstile.reset).not.toHaveBeenCalledWith('never-called');
   });

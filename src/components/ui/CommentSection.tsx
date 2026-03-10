@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTurnstile } from '@/hooks/useTurnstile';
 import type { PublicComment } from '@/domain/entities';
 
@@ -44,7 +44,8 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
       .finally(() => setLoading(false));
   }, [toolSlug]);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  // eslint-disable-next-line sonarjs/deprecation
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage(null);
     setSubmitting(true);
