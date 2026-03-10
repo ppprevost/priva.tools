@@ -6,11 +6,9 @@ export { apply_edits, get_form_fields };
 let ready: Promise<void> | null = null;
 
 export const initEditPdf = (): Promise<void> => {
-  if (!ready) {
-    ready = init(wasmUrl).then(() => undefined).catch((err: Error) => {
-      ready = null;
-      return Promise.reject(err);
-    });
-  }
-  return ready!;
+  ready ??= init(wasmUrl).then(() => undefined).catch((err: Error) => {
+    ready = null;
+    return Promise.reject(err);
+  });
+  return ready;
 };

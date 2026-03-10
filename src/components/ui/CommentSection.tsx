@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState, type SubmitEvent } from 'react';
 import { useTurnstile } from '@/hooks/useTurnstile';
 import type { PublicComment } from '@/domain/entities';
 
@@ -44,7 +44,7 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
       .finally(() => setLoading(false));
   }, [toolSlug]);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage(null);
     setSubmitting(true);
