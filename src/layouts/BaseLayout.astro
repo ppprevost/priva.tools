@@ -1,12 +1,12 @@
 ---
 import WebMCPProvider from '../components/WebMCPProvider';
 
-interface Props {
+type Props = {
   title: string;
   description: string;
   ogImage?: string;
   ogVideo?: string;
-}
+};
 
 const { title, description, ogImage = '/og-default.jpg', ogVideo } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);

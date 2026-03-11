@@ -1,0 +1,24 @@
+---
+import FeatureItem from './FeatureItem.astro';
+
+type Feature = {
+  title: string;
+  description: string;
+};
+
+type Props = {
+  title: string;
+  features: Feature[];
+};
+
+const { title, features } = Astro.props;
+---
+
+<div>
+  <h2 class="text-2xl font-black text-slate-900 mb-4">{title}</h2>
+  <div class="grid md:grid-cols-2 gap-6">
+    {features.map((feature) => (
+      <FeatureItem title={feature.title} description={feature.description} />
+    ))}
+  </div>
+</div>

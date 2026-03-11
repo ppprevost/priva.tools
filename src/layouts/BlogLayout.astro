@@ -6,13 +6,13 @@ import ToolCard from '../components/ui/ToolCard';
 import { tools } from '../lib/tools-config';
 import { buildArticleSchema } from '../lib/schema';
 
-interface Props {
+type Props = {
   title: string;
   description: string;
   date: string;
   relatedTools: string[];
   ogImage?: string;
-}
+};
 
 const { title, description, date, relatedTools: relatedSlugs, ogImage } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);

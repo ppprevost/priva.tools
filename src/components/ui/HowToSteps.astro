@@ -1,0 +1,15 @@
+---
+type Props = {
+  title: string;
+  steps: string[];
+};
+
+const { title, steps } = Astro.props;
+---
+
+<div>
+  <h2 class="text-2xl font-black text-slate-900 mb-4">{title}</h2>
+  <ol class="list-decimal list-inside space-y-2 text-slate-600 font-medium">
+    {steps.map((step) => <li>{step}</li>)}
+  </ol>
+</div>
