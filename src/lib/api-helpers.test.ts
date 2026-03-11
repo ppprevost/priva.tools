@@ -12,63 +12,63 @@ const makeRequest = (opts: { origin?: string; authorization?: string; apiKey?: s
 describe('createRateLimiter', () => {
   it('allows requests under the limit', () => {
     const limiter = createRateLimiter({ windowMs: 60_000, max: 3 });
-    expect(limiter('1.2.3.4')).toBe(false);
-    expect(limiter('1.2.3.4')).toBe(false);
-    expect(limiter('1.2.3.4')).toBe(false);
+    expect(limiter('client-a')).toBe(false);
+    expect(limiter('client-a')).toBe(false);
+    expect(limiter('client-a')).toBe(false);
   });
 
   it('blocks when limit is exceeded', () => {
     const limiter = createRateLimiter({ windowMs: 60_000, max: 2 });
-    limiter('1.2.3.4');
-    limiter('1.2.3.4');
-    expect(limiter('1.2.3.4')).toBe(true);
+    limiter('client-a');
+    limiter('client-a');
+    expect(limiter('client-a')).toBe(true);
   });
 
   it('resets after the window expires', () => {
     vi.useFakeTimers();
     const limiter = createRateLimiter({ windowMs: 1_000, max: 1 });
-    limiter('1.2.3.4');
-    expect(limiter('1.2.3.4')).toBe(true);
+    limiter('client-a');
+    expect(limiter('client-a')).toBe(true);
     vi.advanceTimersByTime(1_001);
-    expect(limiter('1.2.3.4')).toBe(false);
+    expect(limiter('client-a')).toBe(false);
     vi.useRealTimers();
   });
 
   it('triggers lockout after threshold', () => {
     const limiter = createRateLimiter({ windowMs: 60_000, max: 2, lockoutThreshold: 3, lockoutDurationMs: 5_000 });
-    limiter('5.5.5.5');
-    limiter('5.5.5.5');
-    limiter('5.5.5.5');
-    expect(limiter('5.5.5.5')).toBe(true);
+    limiter('client-b');
+    limiter('client-b');
+    limiter('client-b');
+    expect(limiter('client-b')).toBe(true);
   });
 
   it('re-locks immediately after lockout expires (count not reset within window)', () => {
     vi.useFakeTimers();
     const limiter = createRateLimiter({ windowMs: 60_000, max: 1, lockoutThreshold: 2, lockoutDurationMs: 5_000 });
-    limiter('6.6.6.6');
-    limiter('6.6.6.6');
-    limiter('6.6.6.6'); // triggers lockout
+    limiter('client-c');
+    limiter('client-c');
+    limiter('client-c'); // triggers lockout
     vi.advanceTimersByTime(5_001); // lockout expires, but count is NOT reset
-    expect(limiter('6.6.6.6')).toBe(true); // re-locks immediately — known limitation
+    expect(limiter('client-c')).toBe(true); // re-locks immediately — known limitation
     vi.useRealTimers();
   });
 
   it('allows again after both lockout and window expire', () => {
     vi.useFakeTimers();
     const limiter = createRateLimiter({ windowMs: 10_000, max: 1, lockoutThreshold: 2, lockoutDurationMs: 5_000 });
-    limiter('7.7.7.7');
-    limiter('7.7.7.7');
-    limiter('7.7.7.7'); // triggers lockout
+    limiter('client-d');
+    limiter('client-d');
+    limiter('client-d'); // triggers lockout
     vi.advanceTimersByTime(10_001); // window expires → count resets
-    expect(limiter('7.7.7.7')).toBe(false);
+    expect(limiter('client-d')).toBe(false);
     vi.useRealTimers();
   });
 
-  it('tracks IPs independently', () => {
+  it('tracks clients independently', () => {
     const limiter = createRateLimiter({ windowMs: 60_000, max: 1 });
-    limiter('1.1.1.1');
-    expect(limiter('1.1.1.1')).toBe(true);
-    expect(limiter('2.2.2.2')).toBe(false);
+    limiter('client-e');
+    expect(limiter('client-e')).toBe(true);
+    expect(limiter('client-f')).toBe(false);
   });
 });
 
