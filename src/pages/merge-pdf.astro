@@ -1,12 +1,24 @@
 ---
 import ToolLayout from '../layouts/ToolLayout.astro';
 import MergePdf from '../components/tools/MergePdf';
-import FeatureItem from '../components/ui/FeatureItem.astro';
+import HowToSteps from '../components/ui/HowToSteps.astro';
+import FeatureGrid from '../components/ui/FeatureGrid.astro';
 
 const faqItems = [
   { question: 'Can I merge PDFs without uploading them?', answer: 'Yes. Priva.TOOLS processes everything in your browser. Your PDFs never leave your device.' },
   { question: 'Is there a limit on how many PDFs I can merge?', answer: 'No hard limit. You can merge as many files as your browser can handle. For very large batches, processing may take a few seconds.' },
   { question: 'Will the merged PDF keep bookmarks and links?', answer: 'The merged output preserves the page content from each source file. Internal bookmarks may not be carried over depending on the PDF structure.' },
+];
+
+const howToSteps = [
+  'Drop multiple PDF files or click "Browse" to select them.',
+  'Reorder files by dragging if needed.',
+  'Click "Merge" and download the combined PDF.',
+];
+
+const features = [
+  { title: 'Complete Privacy', description: 'Your documents are merged locally in your browser. No server ever sees your files. Perfect for confidential contracts, invoices, or personal documents.' },
+  { title: 'No Limits', description: 'Merge as many PDFs as you want, with no page or file count restrictions. No premium plan, no watermarks.' },
 ];
 ---
 
@@ -21,33 +33,7 @@ const faqItems = [
   <MergePdf client:idle />
 
   <section class="mt-16 space-y-12 text-left" slot="seo-content">
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">How to Merge PDFs</h2>
-      <ol class="list-decimal list-inside space-y-2 text-slate-600 font-medium">
-        <li>Drop multiple PDF files or click "Browse" to select them.</li>
-        <li>Reorder files by dragging if needed.</li>
-        <li>Click "Merge" and download the combined PDF.</li>
-      </ol>
-    </div>
-
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">Why Merge PDFs with Priva.TOOLS?</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <FeatureItem title="Complete Privacy" description="Your documents are merged locally in your browser. No server ever sees your files. Perfect for confidential contracts, invoices, or personal documents." />
-        <FeatureItem title="No Limits" description="Merge as many PDFs as you want, with no page or file count restrictions. No premium plan, no watermarks." />
-      </div>
-    </div>
-
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">Frequently Asked Questions</h2>
-      <dl class="space-y-4">
-        {faqItems.map(({ question, answer }) => (
-          <div>
-            <dt class="font-bold text-slate-900">{question}</dt>
-            <dd class="text-slate-600 mt-1">{answer}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
+    <HowToSteps title="How to Merge PDFs" steps={howToSteps} />
+    <FeatureGrid title="Why Merge PDFs with Priva.TOOLS?" features={features} />
   </section>
 </ToolLayout>
