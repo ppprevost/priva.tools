@@ -1,5 +1,60 @@
-import { describe, it, expect } from 'vitest';
-import { b64ToBuffer, bufferToB64 } from './run-worker';
+import { describe, it, expect, vi } from 'vitest';
+import { b64ToBuffer, bufferToB64, runWorker } from './run-worker';
+
+const makeWorkerFactory = (behavior: 'result' | 'error' | 'onerror', payload?: ArrayBuffer) => () => {
+  const worker = {
+    onmessage: null as ((e: MessageEvent) => void) | null,
+    onerror: null as ((e: ErrorEvent) => void) | null,
+    terminate: vi.fn(),
+    postMessage() {
+      setTimeout(() => {
+        if (behavior === 'result') {
+          worker.onmessage?.({ data: { type: 'result', result: payload ?? new ArrayBuffer(4), filename: 'out.pdf' } } as MessageEvent);
+        } else if (behavior === 'error') {
+          worker.onmessage?.({ data: { type: 'error', error: 'Processing failed' } } as MessageEvent);
+        } else {
+          worker.onerror?.(new ErrorEvent('error', { message: 'Worker crashed' }));
+        }
+      }, 0);
+    },
+  };
+  return worker as unknown as Worker;
+};
+
+describe('runWorker', () => {
+  it('resolves with result and filename', async () => {
+    const buf = new ArrayBuffer(4);
+    const result = await runWorker(makeWorkerFactory('result', buf), {});
+    expect(result.result).toBe(buf);
+    expect(result.filename).toBe('out.pdf');
+  });
+
+  it('uses "output" as default filename when none provided', async () => {
+    const factory = () => {
+      const worker = {
+        onmessage: null as ((e: MessageEvent) => void) | null,
+        onerror: null,
+        terminate: vi.fn(),
+        postMessage() {
+          setTimeout(() => {
+            worker.onmessage?.({ data: { type: 'result', result: new ArrayBuffer(4) } } as MessageEvent);
+          }, 0);
+        },
+      };
+      return worker as unknown as Worker;
+    };
+    const result = await runWorker(factory, {});
+    expect(result.filename).toBe('output');
+  });
+
+  it('rejects on error message', async () => {
+    await expect(runWorker(makeWorkerFactory('error'), {})).rejects.toThrow('Processing failed');
+  });
+
+  it('rejects on worker onerror', async () => {
+    await expect(runWorker(makeWorkerFactory('onerror'), {})).rejects.toBeDefined();
+  });
+});
 
 describe('b64ToBuffer / bufferToB64', () => {
   it('round-trips arbitrary bytes', () => {
