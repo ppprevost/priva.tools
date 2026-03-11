@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/ppprevost/priva.tools/compare/v1.1.0...v1.2.0) (2026-03-11)
+
+
+### Features
+
+* add star rating (1-5) to comments ([#24](https://github.com/ppprevost/priva.tools/issues/24)) ([ff35a85](https://github.com/ppprevost/priva.tools/commit/ff35a85535e3e0361334fc101bf6408d61785c6c))
+
 ## [1.1.0](https://github.com/ppprevost/priva.tools/compare/v1.0.0...v1.1.0) (2026-03-08)
 
 
