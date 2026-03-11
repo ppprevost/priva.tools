@@ -5,7 +5,7 @@ const ORGANIZATION = {
   "logo": "https://priva.tools/favicon.svg",
 };
 
-type FaqItem = {
+export type FaqItem = {
   question: string;
   answer: string;
 };

@@ -4,11 +4,12 @@ export const prerender = false;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
-import { getAllPosts, hasDatabaseUrl } from '../../lib/blog';
+import { listPosts } from '../../use-cases/get-blog-posts';
+import { hasDatabaseUrl } from '../../lib/blog';
 
 if (!hasDatabaseUrl()) return Astro.redirect('/');
 
-const posts = await getAllPosts();
+const posts = await listPosts();
 
 const categoryLabels: Record<string, string> = {
   comparison: 'Comparisons',

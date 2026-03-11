@@ -32,6 +32,18 @@ export function isMobileClient(request: Request): boolean {
   return timingSafeEqual(apiKey, process.env.MOBILE_API_KEY);
 }
 
+export function requireAdmin(request: Request): Response | null {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) return jsonError('Admin not configured.', 503);
+
+  const auth = request.headers.get('Authorization');
+  const token = auth?.startsWith('Bearer ') ? auth.slice(7) : '';
+  if (!token || !timingSafeEqual(token, secret)) {
+    return jsonError('Unauthorized.', 401);
+  }
+  return null;
+}
+
 export function requireAuth(request: Request): Response | null {
   if (isMobileClient(request)) return null;
 
