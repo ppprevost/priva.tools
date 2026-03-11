@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { requireDatabaseUrl, getClientIp, timingSafeEqual, createRateLimiter, jsonResponse, jsonError, handleUseCaseError } from '../../../lib/api-helpers';
+import { requireDatabaseUrl, getClientIp, requireAdmin, createRateLimiter, jsonResponse, jsonError, handleUseCaseError } from '../../../lib/api-helpers';
 import { listAllComments, approveComment, removeComment } from '@/use-cases/admin-comments';
 import { validationError } from '@/domain/errors';
 
@@ -11,18 +11,6 @@ const isRateLimited = createRateLimiter({
   lockoutThreshold: 20,
   lockoutDurationMs: 15 * 60_000,
 });
-
-function requireAdmin(request: Request): Response | null {
-  const secret = process.env.ADMIN_SECRET;
-  if (!secret) return jsonError('Admin not configured.', 503);
-
-  const auth = request.headers.get('Authorization');
-  const token = auth?.startsWith('Bearer ') ? auth.slice(7) : '';
-  if (!token || !timingSafeEqual(token, secret)) {
-    return jsonError('Unauthorized.', 401);
-  }
-  return null;
-}
 
 function guardAll(request: Request, clientAddress: string | undefined): Response | null {
   const ip = getClientIp(clientAddress, request);

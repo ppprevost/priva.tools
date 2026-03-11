@@ -3,14 +3,15 @@ export const prerender = false;
 
 import { marked } from 'marked';
 import BlogLayout from '../../layouts/BlogLayout.astro';
-import { getPostBySlug, hasDatabaseUrl } from '../../lib/blog';
+import { getPost } from '../../use-cases/get-blog-posts';
+import { hasDatabaseUrl } from '../../lib/blog';
 
 if (!hasDatabaseUrl()) return Astro.redirect('/');
 
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect('/blog');
 
-const post = await getPostBySlug(slug);
+const post = await getPost(slug).catch(() => null);
 if (!post) return Astro.redirect('/blog');
 
 const htmlContent = await marked(post.content);
