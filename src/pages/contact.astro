@@ -10,7 +10,7 @@ const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY ?? '';
 
 <BaseLayout title="Contact - Priva.TOOLS" description="Get in touch with the Priva.TOOLS team. Questions, feedback, or partnership inquiries.">
   <Header />
-  <main class="max-w-2xl mx-auto px-6 py-12 md:py-20">
+  <main id="main-content" class="max-w-2xl mx-auto px-6 py-12 md:py-20">
     <PageHeader title="Get in touch" subtitle="Question, feedback, or just want to say hi? Drop us a message." spacing="mb-10" />
     <div class="bg-white rounded-[var(--radius-card)] border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-lg)] p-6 md:p-10">
       <ContactForm client:load turnstileSiteKey={turnstileSiteKey} />

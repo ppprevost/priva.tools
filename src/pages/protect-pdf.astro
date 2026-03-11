@@ -1,13 +1,28 @@
 ---
 import ToolLayout from '../layouts/ToolLayout.astro';
 import ProtectPdf from '../components/tools/ProtectPdf';
-import FeatureItem from '../components/ui/FeatureItem.astro';
+import HowToSteps from '../components/ui/HowToSteps.astro';
+import FeatureGrid from '../components/ui/FeatureGrid.astro';
 
 const faqItems = [
   { question: 'Is it safe to protect my PDF here?', answer: 'Yes. Priva.TOOLS processes everything in your browser using WebAssembly. Your file and password never leave your device.' },
   { question: 'What encryption does this use?', answer: 'We use 256-bit AES encryption, the same standard used by banks and governments. This is the strongest encryption available for PDF files.' },
   { question: 'What is the difference between user and owner password?', answer: 'The user password is required to open the PDF. The owner password controls editing permissions like printing, copying, and modifying. If you only set one password, it applies to both.' },
   { question: 'Can I restrict printing or copying?', answer: 'Yes. Use the Advanced options to set an owner password and choose which permissions to allow or deny, including printing, modifying, and text extraction.' },
+];
+
+const howToSteps = [
+  'Drop your PDF file in the box above or click "Browse" to select it.',
+  'Enter a password and confirm it.',
+  'Optionally configure advanced permissions (printing, copying, editing).',
+  'Click "Protect PDF" and download your encrypted file.',
+];
+
+const features = [
+  { title: '100% Private', description: "Your PDF and password never leave your device. Unlike other tools, we don't upload your files to any server. Encryption happens entirely in your browser using WebAssembly." },
+  { title: 'Military-Grade Encryption', description: '256-bit AES encryption, the strongest available for PDF. Your documents are protected with the same standard used in banking and defense.' },
+  { title: 'Fine-Grained Permissions', description: 'Control exactly what recipients can do: allow or block printing, text extraction, and document modification.' },
+  { title: 'Works Offline', description: 'Since everything runs locally, you can protect PDFs even without an internet connection after the page loads.' },
 ];
 ---
 
@@ -22,36 +37,7 @@ const faqItems = [
   <ProtectPdf client:idle />
 
   <section class="mt-16 space-y-12 text-left" slot="seo-content">
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">How to Protect a PDF with a Password</h2>
-      <ol class="list-decimal list-inside space-y-2 text-slate-600 font-medium">
-        <li>Drop your PDF file in the box above or click "Browse" to select it.</li>
-        <li>Enter a password and confirm it.</li>
-        <li>Optionally configure advanced permissions (printing, copying, editing).</li>
-        <li>Click "Protect PDF" and download your encrypted file.</li>
-      </ol>
-    </div>
-
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">Why Protect PDFs with Priva.TOOLS?</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <FeatureItem title="100% Private" description="Your PDF and password never leave your device. Unlike other tools, we don't upload your files to any server. Encryption happens entirely in your browser using WebAssembly." />
-        <FeatureItem title="Military-Grade Encryption" description="256-bit AES encryption, the strongest available for PDF. Your documents are protected with the same standard used in banking and defense." />
-        <FeatureItem title="Fine-Grained Permissions" description="Control exactly what recipients can do: allow or block printing, text extraction, and document modification." />
-        <FeatureItem title="Works Offline" description="Since everything runs locally, you can protect PDFs even without an internet connection after the page loads." />
-      </div>
-    </div>
-
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">Frequently Asked Questions</h2>
-      <dl class="space-y-4">
-        {faqItems.map(({ question, answer }) => (
-          <div>
-            <dt class="font-bold text-slate-900">{question}</dt>
-            <dd class="text-slate-600 mt-1">{answer}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
+    <HowToSteps title="How to Protect a PDF with a Password" steps={howToSteps} />
+    <FeatureGrid title="Why Protect PDFs with Priva.TOOLS?" features={features} />
   </section>
 </ToolLayout>

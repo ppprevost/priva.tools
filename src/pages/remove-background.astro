@@ -1,13 +1,25 @@
 ---
 import ToolLayout from '../layouts/ToolLayout.astro';
 import RemoveBackground from '../components/tools/RemoveBackground';
-import FeatureItem from '../components/ui/FeatureItem.astro';
+import HowToSteps from '../components/ui/HowToSteps.astro';
+import FeatureGrid from '../components/ui/FeatureGrid.astro';
 
 const faqItems = [
   { question: 'Is background removal really free?', answer: 'Yes, completely free with no limits. No account, no watermark, no premium tier.' },
-  { question: 'Why is the first use slower?', answer: 'The AI model (~40 MB) needs to download on first use. It\'s cached by your browser, so subsequent uses are much faster.' },
+  { question: 'Why is the first use slower?', answer: "The AI model (~40 MB) needs to download on first use. It's cached by your browser, so subsequent uses are much faster." },
   { question: 'What output format do I get?', answer: 'The result is always a PNG with a transparent background, regardless of the input format.' },
   { question: 'Does it work on complex backgrounds?', answer: 'The AI model handles most photos well, including people, animals, and products. Very complex or low-contrast edges may need manual touch-up.' },
+];
+
+const howToSteps = [
+  'Upload your image (JPG, PNG, or WebP).',
+  'Click "Remove Background". The AI model loads in your browser on first use.',
+  'Preview the result on a checkerboard background and download the PNG.',
+];
+
+const howItWorksFeatures = [
+  { title: 'AI in Your Browser', description: 'We use an ONNX neural network model that runs directly in your browser via WebAssembly. The AI model is downloaded once and cached for future use.' },
+  { title: 'True Privacy', description: 'Unlike most background removal tools, your image is never sent to any server. The AI processes your photo locally on your device.' },
 ];
 ---
 
@@ -22,33 +34,7 @@ const faqItems = [
   <RemoveBackground client:idle />
 
   <section class="mt-16 space-y-12 text-left" slot="seo-content">
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">How to Remove a Background</h2>
-      <ol class="list-decimal list-inside space-y-2 text-slate-600 font-medium">
-        <li>Upload your image (JPG, PNG, or WebP).</li>
-        <li>Click "Remove Background". The AI model loads in your browser on first use.</li>
-        <li>Preview the result on a checkerboard background and download the PNG.</li>
-      </ol>
-    </div>
-
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">How Does It Work?</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <FeatureItem title="AI in Your Browser" description="We use an ONNX neural network model that runs directly in your browser via WebAssembly. The AI model is downloaded once and cached for future use." />
-        <FeatureItem title="True Privacy" description="Unlike most background removal tools, your image is never sent to any server. The AI processes your photo locally on your device." />
-      </div>
-    </div>
-
-    <div>
-      <h2 class="text-2xl font-black text-slate-900 mb-4">Frequently Asked Questions</h2>
-      <dl class="space-y-4">
-        {faqItems.map(({ question, answer }) => (
-          <div>
-            <dt class="font-bold text-slate-900">{question}</dt>
-            <dd class="text-slate-600 mt-1">{answer}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
+    <HowToSteps title="How to Remove a Background" steps={howToSteps} />
+    <FeatureGrid title="How Does It Work?" features={howItWorksFeatures} />
   </section>
 </ToolLayout>

@@ -1,7 +1,5 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/layout/Header.astro';
-import Footer from '../components/layout/Footer.astro';
+import StaticPageLayout from '../layouts/StaticPageLayout.astro';
 import FeatureItem from '../components/ui/FeatureItem.astro';
 import PageHeader from '../components/ui/PageHeader.astro';
 import SectionHeading from '../components/ui/SectionHeading.astro';
@@ -9,66 +7,64 @@ import { Heart } from 'lucide-react';
 
 const PAYPAL_LINK = import.meta.env.PUBLIC_PAYPAL_LINK;
 const showDonation = !!PAYPAL_LINK;
+
+const reasons = [
+  { title: 'Server costs', description: 'Hosting, domain, and CDN costs add up. Your support helps keep the site fast and available for everyone.' },
+  { title: 'Development', description: 'New tools, bug fixes, and performance improvements take time. Donations help fund continued development.' },
+  { title: 'Staying independent', description: 'No investors, no ads, no data harvesting. Your support helps Priva.TOOLS stay independent and privacy-first.' },
+];
+
+const otherWays = [
+  'Share Priva.TOOLS with friends, colleagues, or on social media.',
+  'Found a bug or have a suggestion? <a href="/contact" class="text-indigo-600 underline hover:text-indigo-800 transition-colors">Get in touch</a>.',
+  'Leave a comment or review to help others discover the tools.',
+];
 ---
 
-<BaseLayout title="Support Priva.TOOLS - Help Keep Free Tools Alive" description="Priva.TOOLS is free, ad-free, and tracker-free. Support the project with a donation to help cover server costs and development.">
-  <Header />
-  <main class="max-w-3xl mx-auto px-6 py-12 md:py-20">
-    <PageHeader title="Support Priva.TOOLS" subtitle="Help keep free, private tools alive." />
+<StaticPageLayout title="Support Priva.TOOLS - Help Keep Free Tools Alive" description="Priva.TOOLS is free, ad-free, and tracker-free. Support the project with a donation to help cover server costs and development.">
+  <PageHeader title="Support Priva.TOOLS" subtitle="Help keep free, private tools alive." />
 
-    <div class="space-y-10 text-slate-600 font-medium leading-relaxed">
+  <div class="space-y-10 text-slate-600 font-medium leading-relaxed">
+    <section>
+      <p>Priva.TOOLS is a collection of <a href="/about" class="text-indigo-600 underline hover:text-indigo-800 transition-colors">free online tools</a> for PDFs and images. No ads, no tracking, no accounts. Every tool runs entirely in your browser. It will always be free to use.</p>
+    </section>
+
+    {showDonation && (
       <section>
-        <p>Priva.TOOLS is a collection of <a href="/about" class="text-indigo-600 underline hover:text-indigo-800 transition-colors">free online tools</a> for PDFs and images. No ads, no tracking, no accounts. Every tool runs entirely in your browser. It will always be free to use.</p>
+        <SectionHeading>Why support?</SectionHeading>
+        <div class="space-y-4">
+          {reasons.map(({ title, description }) => (
+            <div class="p-4 rounded-xl bg-slate-50 border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)]">
+              <FeatureItem title={title} description={description} />
+            </div>
+          ))}
+        </div>
       </section>
 
-      {showDonation && (
-        <section>
-          <SectionHeading>Why support?</SectionHeading>
-          <div class="space-y-4">
-            <div class="p-4 rounded-xl bg-slate-50 border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)]">
-              <FeatureItem title="Server costs" description="Hosting, domain, and CDN costs add up. Your support helps keep the site fast and available for everyone." />
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)]">
-              <FeatureItem title="Development" description="New tools, bug fixes, and performance improvements take time. Donations help fund continued development." />
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)]">
-              <FeatureItem title="Staying independent" description="No investors, no ads, no data harvesting. Your support helps Priva.TOOLS stay independent and privacy-first." />
-            </div>
-          </div>
-        </section>
-
-        <section class="text-center">
-          <a
-            href={PAYPAL_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-8 py-4 bg-indigo-500 text-white font-bold text-lg rounded-xl border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
-          >
-            <Heart size={20} />
-            Support with PayPal
-          </a>
-          <p class="text-sm text-slate-400 mt-3">One-time or recurring. Any amount helps.</p>
-        </section>
-      )}
-
-      <section>
-        <SectionHeading>Other ways to help</SectionHeading>
-        <ul class="space-y-3">
-          <li class="flex items-start gap-2">
-            <span class="text-indigo-500 font-bold mt-0.5">1.</span>
-            <span>Share Priva.TOOLS with friends, colleagues, or on social media.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-indigo-500 font-bold mt-0.5">2.</span>
-            <span>Found a bug or have a suggestion? <a href="/contact" class="text-indigo-600 underline hover:text-indigo-800 transition-colors">Get in touch</a>.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-indigo-500 font-bold mt-0.5">3.</span>
-            <span>Leave a comment or review to help others discover the tools.</span>
-          </li>
-        </ul>
+      <section class="text-center">
+        <a
+          href={PAYPAL_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-8 py-4 bg-indigo-500 text-white font-bold text-lg rounded-xl border-[3px] border-slate-900 shadow-[var(--shadow-brutalist-sm)] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px] transition-all"
+        >
+          <Heart size={20} />
+          Support with PayPal
+        </a>
+        <p class="text-sm text-slate-400 mt-3">One-time or recurring. Any amount helps.</p>
       </section>
-    </div>
-  </main>
-  <Footer />
-</BaseLayout>
+    )}
+
+    <section>
+      <SectionHeading>Other ways to help</SectionHeading>
+      <ul class="space-y-3">
+        {otherWays.map((item, i) => (
+          <li class="flex items-start gap-2">
+            <span class="text-indigo-500 font-bold mt-0.5">{i + 1}.</span>
+            <span set:html={item} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</StaticPageLayout>

@@ -12,19 +12,19 @@ import { getPostsByTool, hasDatabaseUrl } from '../lib/blog';
 
 const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY ?? '';
 
-interface FaqItem {
+type FaqItem = {
   question: string;
   answer: string;
-}
+};
 
-interface Props {
+type Props = {
   title: string;
   heading: string;
   description: string;
   relatedSlugs?: string[];
   faqItems?: FaqItem[];
   toolSlug?: string;
-}
+};
 
 const { title, heading, description, relatedSlugs = [], faqItems = [], toolSlug } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -74,6 +74,20 @@ if (toolSlug && hasDatabaseUrl()) {
     <slot />
 
     <slot name="seo-content" />
+
+    {faqItems.length > 0 && (
+      <section class="mt-12 space-y-4 text-left">
+        <h2 class="text-2xl font-black text-slate-900">Frequently Asked Questions</h2>
+        <dl class="space-y-4">
+          {faqItems.map(({ question, answer }) => (
+            <div>
+              <dt class="font-bold text-slate-900">{question}</dt>
+              <dd class="text-slate-600 mt-1">{answer}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )}
 
     {relatedTools.length > 0 && (
       <section class="mt-16">
