@@ -3,7 +3,7 @@ import type { Comment, PublicComment } from '@/domain/entities';
 
 export async function getApprovedComments(toolSlug: string): Promise<PublicComment[]> {
   const rows = await sql`
-    SELECT id, author_name, content, created_at
+    SELECT id, author_name, content, created_at, rating
     FROM comments
     WHERE tool_slug = ${toolSlug} AND approved = true
     ORDER BY created_at DESC
@@ -20,16 +20,16 @@ export async function countRecentByIp(ipHash: string): Promise<number> {
   return rows[0].cnt;
 }
 
-export async function insertComment(toolSlug: string, name: string, content: string, ipHash: string): Promise<void> {
+export async function insertComment(toolSlug: string, name: string, content: string, ipHash: string, rating?: number | null): Promise<void> {
   await sql`
-    INSERT INTO comments (tool_slug, author_name, content, ip_hash)
-    VALUES (${toolSlug}, ${name}, ${content}, ${ipHash})
+    INSERT INTO comments (tool_slug, author_name, content, ip_hash, rating)
+    VALUES (${toolSlug}, ${name}, ${content}, ${ipHash}, ${rating ?? null})
   `;
 }
 
 export async function getAllComments(): Promise<Omit<Comment, 'ip_hash'>[]> {
   const rows = await sql`
-    SELECT id, tool_slug, author_name, content, approved, created_at
+    SELECT id, tool_slug, author_name, content, approved, created_at, rating
     FROM comments ORDER BY created_at DESC LIMIT 100
   `;
   return rows as Omit<Comment, 'ip_hash'>[];

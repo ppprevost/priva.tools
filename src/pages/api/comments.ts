@@ -13,12 +13,17 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   try {
     const body = await request.json();
-    const { toolSlug, authorName, content, turnstileToken, website } = body;
+    const { toolSlug, authorName, content, rating, turnstileToken, website } = body;
+
+    if (rating != null && typeof rating !== 'number') {
+      return jsonResponse({ error: 'Invalid rating.' }, 400);
+    }
 
     await submitComment({
       toolSlug,
       authorName,
       content,
+      rating: rating ?? null,
       turnstileToken,
       website,
       ip: getClientIp(clientAddress, request),

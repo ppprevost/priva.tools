@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, type SubmitEvent } from 'react';
 import { useTurnstile } from '@/hooks/useTurnstile';
 import type { PublicComment } from '@/domain/entities';
 
@@ -30,6 +30,8 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
   const [authorName, setAuthorName] = useState('');
   const [content, setContent] = useState('');
   const [website, setWebsite] = useState('');
+  const [rating, setRating] = useState<number | null>(null);
+  const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const { containerRef: turnstileRef, getToken: getTurnstileToken, reset: resetTurnstile } = useTurnstile(turnstileSiteKey);
@@ -44,8 +46,7 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
       .finally(() => setLoading(false));
   }, [toolSlug]);
 
-  // eslint-disable-next-line sonarjs/deprecation
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage(null);
     setSubmitting(true);
@@ -65,6 +66,7 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
           toolSlug,
           authorName,
           content,
+          rating,
           turnstileToken,
           website,
         }),
@@ -74,6 +76,7 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
         setMessage({ type: 'success', text: 'Your comment will appear after review.' });
         setAuthorName('');
         setContent('');
+        setRating(null);
         resetTurnstile();
       } else {
         const data = await res.json();
@@ -110,6 +113,13 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
               <span className="font-black text-slate-900">{c.author_name}</span>
               <span className="text-xs text-slate-400">{timeAgo(c.created_at)}</span>
             </div>
+            {c.rating != null && (
+              <div className="flex gap-0.5 mb-2" aria-label={`${c.rating} out of 5 stars`}>
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <span key={s} className={s <= (c.rating ?? 0) ? 'text-amber-400' : 'text-slate-300'} aria-hidden="true">★</span>
+                ))}
+              </div>
+            )}
             <p className="text-slate-600 text-sm whitespace-pre-line">{c.content}</p>
           </div>
         ))}
@@ -158,6 +168,28 @@ export default function CommentSection({ toolSlug, turnstileSiteKey }: Readonly<
               className="w-full px-4 py-2.5 rounded-[var(--radius-button)] border-[3px] border-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-vertical"
               placeholder="Share your experience with this tool..."
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-1">
+              Rating <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <div className="flex gap-1" role="group" aria-label="Star rating">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setRating(rating === s ? null : s)}
+                  onMouseEnter={() => setHoverRating(s)}
+                  onMouseLeave={() => setHoverRating(null)}
+                  aria-label={`${s} star${s > 1 ? 's' : ''}`}
+                  aria-pressed={rating === s}
+                  className="text-2xl leading-none transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
+                >
+                  <span className={(hoverRating ?? rating ?? 0) >= s ? 'text-amber-400' : 'text-slate-300'}>★</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="absolute opacity-0 h-0 w-0 overflow-hidden" aria-hidden="true" tabIndex={-1}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Send, CheckCircle, AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useTurnstile } from '@/hooks/useTurnstile';
@@ -17,8 +17,7 @@ export default function ContactForm({ turnstileSiteKey }: Readonly<Props>) {
   const [errorMsg, setErrorMsg] = useState('');
   const { containerRef: turnstileRef, getToken: getTurnstileToken, reset: resetTurnstile } = useTurnstile(turnstileSiteKey);
 
-  // eslint-disable-next-line sonarjs/deprecation
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setState('sending');
     setErrorMsg('');

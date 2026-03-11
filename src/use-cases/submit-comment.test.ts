@@ -78,7 +78,24 @@ describe('submitComment', () => {
       'compress-pdf',
       'Alice',
       'This is a great tool for compressing!',
-      'abc123hash'
+      'abc123hash',
+      undefined
     );
+  });
+
+  it('passes rating to insertComment', async () => {
+    await submitComment({ ...validInput, rating: 4 });
+    expect(insertComment).toHaveBeenCalledWith(
+      'compress-pdf',
+      'Alice',
+      'This is a great tool for compressing!',
+      'abc123hash',
+      4
+    );
+  });
+
+  it('throws ValidationError for invalid rating', async () => {
+    await expect(submitComment({ ...validInput, rating: 6 }))
+      .rejects.toThrow('Rating');
   });
 });

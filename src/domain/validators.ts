@@ -20,7 +20,7 @@ type ValidationResult = {
   error?: string;
 };
 
-export function validateComment(name: string, content: string): ValidationResult {
+export function validateComment(name: string, content: string, rating?: number | null): ValidationResult {
   const trimmedName = name?.trim() ?? '';
   const trimmedContent = content?.trim() ?? '';
 
@@ -30,6 +30,10 @@ export function validateComment(name: string, content: string): ValidationResult
 
   if (trimmedContent.length < COMMENT_LIMITS.content.min || trimmedContent.length > COMMENT_LIMITS.content.max) {
     return { valid: false, error: `Comment must be between ${COMMENT_LIMITS.content.min} and ${COMMENT_LIMITS.content.max} characters.` };
+  }
+
+  if (rating != null && (!Number.isInteger(rating) || rating < 1 || rating > 5)) {
+    return { valid: false, error: 'Rating must be an integer between 1 and 5.' };
   }
 
   return { valid: true };
