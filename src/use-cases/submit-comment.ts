@@ -9,6 +9,7 @@ type SubmitCommentInput = {
   toolSlug: string;
   authorName: string;
   content: string;
+  rating?: number | null;
   turnstileToken?: string;
   website?: string;
   ip: string;
@@ -25,7 +26,7 @@ export async function submitComment(input: SubmitCommentInput): Promise<void> {
   const trimmedName = input.authorName?.trim() ?? '';
   const trimmedContent = input.content?.trim() ?? '';
 
-  const validation = validateComment(trimmedName, trimmedContent);
+  const validation = validateComment(trimmedName, trimmedContent, input.rating);
   if (!validation.valid) {
     throw validationError(validation.error ?? 'Invalid input.');
   }
@@ -41,5 +42,5 @@ export async function submitComment(input: SubmitCommentInput): Promise<void> {
     throw rateLimitError('Too many comments. Please try again later.');
   }
 
-  await insertComment(input.toolSlug, trimmedName, trimmedContent, ipHash);
+  await insertComment(input.toolSlug, trimmedName, trimmedContent, ipHash, input.rating);
 }

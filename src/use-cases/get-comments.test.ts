@@ -20,7 +20,7 @@ describe('getComments', () => {
 
   it('returns approved comments for valid tool', async () => {
     const mockComments = [
-      { id: 1, author_name: 'Alice', content: 'Great!', created_at: '2024-01-01' },
+      { id: 1, author_name: 'Alice', content: 'Great!', created_at: '2024-01-01', rating: null },
     ];
     vi.mocked(getApprovedComments).mockResolvedValue(mockComments);
 

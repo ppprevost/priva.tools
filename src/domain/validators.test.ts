@@ -53,6 +53,36 @@ describe('validateComment', () => {
     const result = validateComment(null as unknown as string, 'content');
     expect(result.valid).toBe(false);
   });
+
+  it('accepts valid rating', () => {
+    expect(validateComment('Alice', 'This is a great tool!', 4)).toEqual({ valid: true });
+  });
+
+  it('accepts missing rating (null)', () => {
+    expect(validateComment('Alice', 'This is a great tool!', null)).toEqual({ valid: true });
+  });
+
+  it('accepts missing rating (undefined)', () => {
+    expect(validateComment('Alice', 'This is a great tool!')).toEqual({ valid: true });
+  });
+
+  it('rejects rating below 1', () => {
+    const result = validateComment('Alice', 'This is a great tool!', 0);
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain('Rating');
+  });
+
+  it('rejects rating above 5', () => {
+    const result = validateComment('Alice', 'This is a great tool!', 6);
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain('Rating');
+  });
+
+  it('rejects non-integer rating', () => {
+    const result = validateComment('Alice', 'This is a great tool!', 3.5);
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain('Rating');
+  });
 });
 
 describe('validateContactMessage', () => {

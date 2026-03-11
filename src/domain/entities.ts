@@ -6,9 +6,10 @@ export type Comment = {
   ip_hash: string;
   approved: boolean;
   created_at: string;
+  rating: number | null;
 };
 
-export type PublicComment = Pick<Comment, 'id' | 'author_name' | 'content' | 'created_at'>;
+export type PublicComment = Pick<Comment, 'id' | 'author_name' | 'content' | 'created_at' | 'rating'>;
 
 export type ContactMessage = {
   name: string;
