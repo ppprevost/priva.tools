@@ -17,7 +17,6 @@ export type CommentRemoved = {
 
 export type ContactSubmitted = {
   readonly type: 'ContactSubmitted';
-  readonly email: string;
 };
 
 export type DomainEvent = CommentSubmitted | CommentApproved | CommentRemoved | ContactSubmitted;

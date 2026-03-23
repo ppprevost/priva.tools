@@ -37,7 +37,8 @@ export async function getAll(): Promise<Omit<Comment, 'ip_hash'>[]> {
 
 export async function setApproval(id: number, approved: boolean): Promise<Comment | null> {
   const rows = await sql`
-    UPDATE comments SET approved = ${approved} WHERE id = ${id} RETURNING id, approved
+    UPDATE comments SET approved = ${approved} WHERE id = ${id}
+    RETURNING id, tool_slug, author_name, content, ip_hash, approved, created_at, rating
   `;
   return (rows[0] as Comment) ?? null;
 }

@@ -44,6 +44,6 @@ describe('submitContact', () => {
   it('inserts contact and returns event on success', async () => {
     const event = await submitContact(deps, validInput);
     expect(deps.contactRepo.insert).toHaveBeenCalledWith('Alice', 'alice@test.com', 'Hello, I have a question.');
-    expect(event).toEqual({ type: 'ContactSubmitted', email: 'alice@test.com' });
+    expect(event).toEqual({ type: 'ContactSubmitted' });
   });
 });

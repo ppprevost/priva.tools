@@ -26,5 +26,5 @@ export async function submitContact(deps: Deps, input: SubmitContactInput): Prom
 
   await deps.contactRepo.insert(name, email, message);
 
-  return { type: 'ContactSubmitted', email };
+  return { type: 'ContactSubmitted' };
 }
