@@ -1,16 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { submitContact } from './submit-contact';
 
-vi.mock('@/infra/turnstile', () => ({
-  verifyTurnstile: vi.fn(),
-}));
-
-vi.mock('@/infra/contact.repo', () => ({
-  insertContact: vi.fn(),
-}));
-
-import { verifyTurnstile } from '@/infra/turnstile';
-import { insertContact } from '@/infra/contact.repo';
+const createDeps = () => ({
+  contactRepo: { insert: vi.fn() },
+  captcha: { verify: vi.fn().mockResolvedValue(true) },
+});
 
 const validInput = {
   name: 'Alice',
@@ -19,35 +13,37 @@ const validInput = {
   turnstileToken: 'valid-token',
 };
 
-beforeEach(() => {
-  vi.clearAllMocks();
-  vi.mocked(verifyTurnstile).mockResolvedValue(true);
-});
-
 describe('submitContact', () => {
+  let deps: ReturnType<typeof createDeps>;
+
+  beforeEach(() => {
+    deps = createDeps();
+  });
+
   it('throws CaptchaError when turnstile fails', async () => {
-    vi.mocked(verifyTurnstile).mockResolvedValue(false);
-    await expect(submitContact(validInput))
+    deps.captcha.verify.mockResolvedValue(false);
+    await expect(submitContact(deps, validInput))
       .rejects.toThrow('Captcha verification failed.');
   });
 
   it('throws CaptchaError when no token', async () => {
-    await expect(submitContact({ ...validInput, turnstileToken: undefined }))
+    await expect(submitContact(deps, { ...validInput, turnstileToken: undefined }))
       .rejects.toThrow('Captcha verification failed.');
   });
 
-  it('throws ValidationError for empty fields', async () => {
-    await expect(submitContact({ ...validInput, name: '' }))
-      .rejects.toThrow('All fields are required.');
+  it('throws ValidationError for empty name', async () => {
+    await expect(submitContact(deps, { ...validInput, name: '' }))
+      .rejects.toThrow('Name is required.');
   });
 
   it('throws ValidationError for invalid email', async () => {
-    await expect(submitContact({ ...validInput, email: 'not-email' }))
+    await expect(submitContact(deps, { ...validInput, email: 'not-email' }))
       .rejects.toThrow('Invalid email');
   });
 
-  it('inserts contact on success', async () => {
-    await submitContact(validInput);
-    expect(insertContact).toHaveBeenCalledWith('Alice', 'alice@test.com', 'Hello, I have a question.');
+  it('inserts contact and returns event on success', async () => {
+    const event = await submitContact(deps, validInput);
+    expect(deps.contactRepo.insert).toHaveBeenCalledWith('Alice', 'alice@test.com', 'Hello, I have a question.');
+    expect(event).toEqual({ type: 'ContactSubmitted', email: 'alice@test.com' });
   });
 });

@@ -10,6 +10,7 @@ import type { ToolCategory } from '../lib/tools-config';
 import { buildFaqSchema, buildBreadcrumbSchema, buildWebAppSchema } from '../lib/schema';
 import type { FaqItem } from '../lib/schema';
 import { getRelatedPosts } from '../use-cases/get-blog-posts';
+import * as blogRepo from '../infra/blog.repo';
 import { hasDatabaseUrl } from '../lib/blog';
 
 const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY ?? '';
@@ -48,7 +49,7 @@ const relatedTools = relatedSlugs.map((s) => tools[s]).filter(Boolean);
 
 let relatedPosts: { slug: string; title: string; description: string }[] = [];
 if (toolSlug && hasDatabaseUrl()) {
-  relatedPosts = await getRelatedPosts(toolSlug);
+  relatedPosts = await getRelatedPosts({ blogRepo }, toolSlug);
 }
 ---
 

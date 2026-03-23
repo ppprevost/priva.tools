@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import { listPosts, getPost, getRelatedPosts } from './get-blog-posts';
 
-vi.mock('@/infra/blog.repo', () => ({
-  getAllPosts: vi.fn(),
-  getPostBySlug: vi.fn(),
-  getPostsByTool: vi.fn(),
-}));
-
-import * as blogRepo from '@/infra/blog.repo';
+const createDeps = () => ({
+  blogRepo: {
+    getAll: vi.fn(),
+    getBySlug: vi.fn(),
+    getByTool: vi.fn(),
+  },
+});
 
 const mockPost = {
   slug: 'test-post',
@@ -22,9 +22,10 @@ const mockPost = {
 
 describe('listPosts', () => {
   it('returns posts without content', async () => {
-    vi.mocked(blogRepo.getAllPosts).mockResolvedValue([mockPost]);
+    const deps = createDeps();
+    deps.blogRepo.getAll.mockResolvedValue([mockPost]);
 
-    const result = await listPosts();
+    const result = await listPosts(deps);
     expect(result).toHaveLength(1);
     expect(result[0]).not.toHaveProperty('content');
     expect(result[0].title).toBe('Test');
@@ -33,24 +34,27 @@ describe('listPosts', () => {
 
 describe('getPost', () => {
   it('returns post by slug', async () => {
-    vi.mocked(blogRepo.getPostBySlug).mockResolvedValue(mockPost);
+    const deps = createDeps();
+    deps.blogRepo.getBySlug.mockResolvedValue(mockPost);
 
-    const result = await getPost('test-post');
+    const result = await getPost(deps, 'test-post');
     expect(result).toEqual(mockPost);
   });
 
   it('throws NotFoundError for missing slug', async () => {
-    vi.mocked(blogRepo.getPostBySlug).mockResolvedValue(null);
-    await expect(getPost('nonexistent'))
+    const deps = createDeps();
+    deps.blogRepo.getBySlug.mockResolvedValue(null);
+    await expect(getPost(deps, 'nonexistent'))
       .rejects.toThrow('Post not found.');
   });
 });
 
 describe('getRelatedPosts', () => {
   it('returns related posts by tool slug', async () => {
-    vi.mocked(blogRepo.getPostsByTool).mockResolvedValue([mockPost]);
+    const deps = createDeps();
+    deps.blogRepo.getByTool.mockResolvedValue([mockPost]);
 
-    const result = await getRelatedPosts('compress-pdf');
+    const result = await getRelatedPosts(deps, 'compress-pdf');
     expect(result).toEqual([mockPost]);
   });
 });

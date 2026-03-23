@@ -1,19 +1,23 @@
 import { notFoundError } from '@/domain/errors';
-import * as blogRepo from '@/infra/blog.repo';
+import type { BlogRepo } from '@/domain/ports';
 import type { BlogPost, BlogPostSummary } from '@/domain/entities';
 
-export async function listPosts(): Promise<BlogPostSummary[]> {
-  const posts = await blogRepo.getAllPosts();
+type Deps = {
+  blogRepo: BlogRepo;
+};
+
+export async function listPosts(deps: Deps): Promise<BlogPostSummary[]> {
+  const posts = await deps.blogRepo.getAll();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return posts.map(({ content, ...rest }) => rest);
 }
 
-export async function getPost(slug: string): Promise<BlogPost> {
-  const post = await blogRepo.getPostBySlug(slug);
+export async function getPost(deps: Deps, slug: string): Promise<BlogPost> {
+  const post = await deps.blogRepo.getBySlug(slug);
   if (!post) throw notFoundError('Post not found.');
   return post;
 }
 
-export async function getRelatedPosts(toolSlug: string): Promise<BlogPost[]> {
-  return blogRepo.getPostsByTool(toolSlug);
+export async function getRelatedPosts(deps: Deps, toolSlug: string): Promise<BlogPost[]> {
+  return deps.blogRepo.getByTool(toolSlug);
 }

@@ -1,11 +1,15 @@
 import { tools } from '@/lib/tools-config';
 import { validationError } from '@/domain/errors';
-import { getApprovedComments } from '@/infra/comment.repo';
+import type { CommentRepo } from '@/domain/ports';
 import type { PublicComment } from '@/domain/entities';
 
-export async function getComments(slug: string): Promise<PublicComment[]> {
+type Deps = {
+  commentRepo: Pick<CommentRepo, 'getApproved'>;
+};
+
+export async function getComments(deps: Deps, slug: string): Promise<PublicComment[]> {
   if (!slug || !tools[slug]) {
     throw validationError('Invalid tool.');
   }
-  return getApprovedComments(slug);
+  return deps.commentRepo.getApproved(slug);
 }

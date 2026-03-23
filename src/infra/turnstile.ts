@@ -1,4 +1,4 @@
-export async function verifyTurnstile(token: string): Promise<boolean> {
+export async function verify(token: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) return false;
 

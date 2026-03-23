@@ -1,9 +1,14 @@
 import { tools } from '@/lib/tools-config';
-import { validateComment } from '@/domain/validators';
 import { validationError, captchaError, rateLimitError } from '@/domain/errors';
-import { verifyTurnstile } from '@/infra/turnstile';
-import { hashIP } from '@/infra/hash';
-import { countRecentByIp, insertComment } from '@/infra/comment.repo';
+import { createAuthorName, createCommentContent, createRating } from '@/domain/values';
+import type { CommentRepo, CaptchaVerifier, IpHasher } from '@/domain/ports';
+import type { CommentSubmitted } from '@/domain/events';
+
+type Deps = {
+  commentRepo: Pick<CommentRepo, 'countRecentByIp' | 'insert'>;
+  captcha: CaptchaVerifier;
+  ipHasher: IpHasher;
+};
 
 type SubmitCommentInput = {
   toolSlug: string;
@@ -16,31 +21,29 @@ type SubmitCommentInput = {
   isMobile: boolean;
 };
 
-export async function submitComment(input: SubmitCommentInput): Promise<void> {
-  if (input.website) return;
+export async function submitComment(deps: Deps, input: SubmitCommentInput): Promise<CommentSubmitted | null> {
+  if (input.website) return null;
 
   if (!input.toolSlug || !tools[input.toolSlug]) {
     throw validationError('Invalid tool.');
   }
 
-  const trimmedName = input.authorName?.trim() ?? '';
-  const trimmedContent = input.content?.trim() ?? '';
+  const authorName = createAuthorName(input.authorName);
+  const content = createCommentContent(input.content);
+  const rating = createRating(input.rating);
 
-  const validation = validateComment(trimmedName, trimmedContent, input.rating);
-  if (!validation.valid) {
-    throw validationError(validation.error ?? 'Invalid input.');
-  }
-
-  if (!input.isMobile && (!input.turnstileToken || !(await verifyTurnstile(input.turnstileToken)))) {
+  if (!input.isMobile && (!input.turnstileToken || !(await deps.captcha.verify(input.turnstileToken)))) {
     throw captchaError();
   }
 
-  const ipHash = await hashIP(input.ip);
+  const ipHash = await deps.ipHasher.hash(input.ip);
 
-  const recentCount = await countRecentByIp(ipHash);
+  const recentCount = await deps.commentRepo.countRecentByIp(ipHash);
   if (recentCount >= 3) {
     throw rateLimitError('Too many comments. Please try again later.');
   }
 
-  await insertComment(input.toolSlug, trimmedName, trimmedContent, ipHash, input.rating);
+  await deps.commentRepo.insert(input.toolSlug, authorName, content, ipHash, rating);
+
+  return { type: 'CommentSubmitted', toolSlug: input.toolSlug, authorName };
 }

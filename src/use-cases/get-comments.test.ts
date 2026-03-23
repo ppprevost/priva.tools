@@ -1,31 +1,34 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getComments } from './get-comments';
 
-vi.mock('@/infra/comment.repo', () => ({
-  getApprovedComments: vi.fn(),
-}));
-
-import { getApprovedComments } from '@/infra/comment.repo';
+const createDeps = () => ({
+  commentRepo: {
+    getApproved: vi.fn(),
+  },
+});
 
 describe('getComments', () => {
   it('throws ValidationError for invalid tool slug', async () => {
-    await expect(getComments('nonexistent'))
+    const deps = createDeps();
+    await expect(getComments(deps, 'nonexistent'))
       .rejects.toThrow('Invalid tool.');
   });
 
   it('throws ValidationError for empty slug', async () => {
-    await expect(getComments(''))
+    const deps = createDeps();
+    await expect(getComments(deps, ''))
       .rejects.toThrow('Invalid tool.');
   });
 
   it('returns approved comments for valid tool', async () => {
+    const deps = createDeps();
     const mockComments = [
       { id: 1, author_name: 'Alice', content: 'Great!', created_at: '2024-01-01', rating: null },
     ];
-    vi.mocked(getApprovedComments).mockResolvedValue(mockComments);
+    deps.commentRepo.getApproved.mockResolvedValue(mockComments);
 
-    const result = await getComments('compress-pdf');
+    const result = await getComments(deps, 'compress-pdf');
     expect(result).toEqual(mockComments);
-    expect(getApprovedComments).toHaveBeenCalledWith('compress-pdf');
+    expect(deps.commentRepo.getApproved).toHaveBeenCalledWith('compress-pdf');
   });
 });

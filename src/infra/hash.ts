@@ -1,4 +1,4 @@
-export async function hashIP(ip: string): Promise<string> {
+export async function hash(ip: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(ip);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);

@@ -3,6 +3,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { requireDatabaseUrl, getClientIp, requireAdmin, createRateLimiter, jsonResponse, jsonError, handleUseCaseError } from '../../../lib/api-helpers';
 import { listAllComments, approveComment, removeComment } from '@/use-cases/admin-comments';
+import * as commentRepo from '@/infra/comment.repo';
 import { validationError } from '@/domain/errors';
 
 const isRateLimited = createRateLimiter({
@@ -22,12 +23,14 @@ function guardAll(request: Request, clientAddress: string | undefined): Response
   return requireAdmin(request);
 }
 
+const deps = { commentRepo };
+
 export const GET: APIRoute = async ({ request, clientAddress }) => {
   const guard = guardAll(request, clientAddress);
   if (guard) return guard;
 
   try {
-    const rows = await listAllComments();
+    const rows = await listAllComments(deps);
     return jsonResponse(rows);
   } catch (e) {
     return handleUseCaseError(e);
@@ -46,8 +49,8 @@ export const PATCH: APIRoute = async ({ request, clientAddress }) => {
       throw validationError('id (number) and approved (boolean) are required.');
     }
 
-    const result = await approveComment(id, approved);
-    return jsonResponse(result);
+    const { comment } = await approveComment(deps, id, approved);
+    return jsonResponse(comment);
   } catch (e) {
     return handleUseCaseError(e);
   }
@@ -65,7 +68,7 @@ export const DELETE: APIRoute = async ({ request, clientAddress }) => {
       throw validationError('id (number) is required.');
     }
 
-    await removeComment(id);
+    await removeComment(deps, id);
     return jsonResponse({ deleted: true, id });
   } catch (e) {
     return handleUseCaseError(e);
