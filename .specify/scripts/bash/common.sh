@@ -83,9 +83,9 @@ check_feature_branch() {
         return 0
     fi
 
-    if [[ ! "$branch" =~ ^[0-9]{3}- ]] && [[ ! "$branch" =~ ^[0-9]{8}-[0-9]{6}- ]]; then
+    if [[ ! "$branch" =~ ^[0-9]{3}- ]] && [[ ! "$branch" =~ ^[0-9]{8}-[0-9]{6}- ]] && [[ ! "$branch" =~ ^(feat|fix|chore|refactor|docs|test|ci|perf|style)/ ]]; then
         echo "ERROR: Not on a feature branch. Current branch: $branch" >&2
-        echo "Feature branches should be named like: 001-feature-name or 20260319-143022-feature-name" >&2
+        echo "Feature branches should be named like: 001-feature-name, 20260319-143022-feature-name, or type/feature-name (e.g., feat/my-feature)" >&2
         return 1
     fi
 
@@ -107,6 +107,11 @@ find_feature_dir_by_prefix() {
         prefix="${BASH_REMATCH[1]}"
     elif [[ "$branch_name" =~ ^([0-9]{3})- ]]; then
         prefix="${BASH_REMATCH[1]}"
+    elif [[ "$branch_name" =~ ^(feat|fix|chore|refactor|docs|test|ci|perf|style)/(.+)$ ]]; then
+        # Conventional branch: use type/name as directory (slashes replaced with dashes)
+        local safe_name="${branch_name//\//-}"
+        echo "$specs_dir/$safe_name"
+        return
     else
         # If branch doesn't have a recognized prefix, fall back to exact match
         echo "$specs_dir/$branch_name"

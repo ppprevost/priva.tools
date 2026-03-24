@@ -5,6 +5,7 @@ set -e
 JSON_MODE=false
 SHORT_NAME=""
 BRANCH_NUMBER=""
+BRANCH_TYPE=""
 USE_TIMESTAMP=false
 ARGS=()
 i=1
@@ -41,23 +42,38 @@ while [ $i -le $# ]; do
             fi
             BRANCH_NUMBER="$next_arg"
             ;;
+        --type)
+            if [ $((i + 1)) -gt $# ]; then
+                echo 'Error: --type requires a value (feat, fix, chore, refactor, docs, test, ci, perf, style)' >&2
+                exit 1
+            fi
+            i=$((i + 1))
+            next_arg="${!i}"
+            if [[ "$next_arg" == --* ]]; then
+                echo 'Error: --type requires a value' >&2
+                exit 1
+            fi
+            BRANCH_TYPE="$next_arg"
+            ;;
         --timestamp)
             USE_TIMESTAMP=true
             ;;
         --help|-h)
-            echo "Usage: $0 [--json] [--short-name <name>] [--number N] [--timestamp] <feature_description>"
+            echo "Usage: $0 [--json] [--short-name <name>] [--number N] [--timestamp] [--type <type>] <feature_description>"
             echo ""
             echo "Options:"
             echo "  --json              Output in JSON format"
             echo "  --short-name <name> Provide a custom short name (2-4 words) for the branch"
             echo "  --number N          Specify branch number manually (overrides auto-detection)"
             echo "  --timestamp         Use timestamp prefix (YYYYMMDD-HHMMSS) instead of sequential numbering"
+            echo "  --type <type>       Use conventional branch naming (e.g., feat/name, fix/name, chore/name)"
             echo "  --help, -h          Show this help message"
             echo ""
             echo "Examples:"
             echo "  $0 'Add user authentication system' --short-name 'user-auth'"
             echo "  $0 'Implement OAuth2 integration for API' --number 5"
             echo "  $0 --timestamp --short-name 'user-auth' 'Add user authentication'"
+            echo "  $0 --type feat --short-name 'user-auth' 'Add user authentication'"
             exit 0
             ;;
         *)
@@ -257,8 +273,26 @@ if [ "$USE_TIMESTAMP" = true ] && [ -n "$BRANCH_NUMBER" ]; then
     BRANCH_NUMBER=""
 fi
 
-# Determine branch prefix
-if [ "$USE_TIMESTAMP" = true ]; then
+# Warn if --type is used with --timestamp or --number
+if [ -n "$BRANCH_TYPE" ] && { [ "$USE_TIMESTAMP" = true ] || [ -n "$BRANCH_NUMBER" ]; }; then
+    >&2 echo "[specify] Warning: --timestamp and --number are ignored when --type is used"
+    USE_TIMESTAMP=false
+    BRANCH_NUMBER=""
+fi
+
+# Validate --type value
+if [ -n "$BRANCH_TYPE" ]; then
+    case "$BRANCH_TYPE" in
+        feat|fix|chore|refactor|docs|test|ci|perf|style) ;;
+        *) echo "Error: --type must be one of: feat, fix, chore, refactor, docs, test, ci, perf, style" >&2; exit 1 ;;
+    esac
+fi
+
+# Determine branch name
+if [ -n "$BRANCH_TYPE" ]; then
+    FEATURE_NUM="$BRANCH_TYPE"
+    BRANCH_NAME="${BRANCH_TYPE}/${BRANCH_SUFFIX}"
+elif [ "$USE_TIMESTAMP" = true ]; then
     FEATURE_NUM=$(date +%Y%m%d-%H%M%S)
     BRANCH_NAME="${FEATURE_NUM}-${BRANCH_SUFFIX}"
 else
@@ -320,7 +354,9 @@ else
     >&2 echo "[specify] Warning: Git repository not detected; skipped branch creation for $BRANCH_NAME"
 fi
 
-FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
+# For conventional branches (type/name), use dashes in directory name
+SAFE_BRANCH_NAME="${BRANCH_NAME//\//-}"
+FEATURE_DIR="$SPECS_DIR/$SAFE_BRANCH_NAME"
 mkdir -p "$FEATURE_DIR"
 
 TEMPLATE=$(resolve_template "spec-template" "$REPO_ROOT") || true

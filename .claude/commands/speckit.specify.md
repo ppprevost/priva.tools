@@ -70,16 +70,27 @@ Given that feature description, do this:
      - "Create a dashboard for analytics" → "analytics-dashboard"
      - "Fix payment processing timeout bug" → "fix-payment-timeout"
 
-2. **Create the feature branch** by running the script with `--short-name` (and `--json`). In sequential mode, do NOT pass `--number` — the script auto-detects the next available number. In timestamp mode, the script generates a `YYYYMMDD-HHMMSS` prefix automatically:
+2. **Create the feature branch** by running the script with `--short-name` (and `--json`). Check `.specify/init-options.json` for branch configuration:
 
-   **Branch numbering mode**: Before running the script, check if `.specify/init-options.json` exists and read the `branch_numbering` value.
+   **Branch style**: Read the `branch_style` value from `.specify/init-options.json`.
+   - If `"conventional"`, use `--type <type>` where type is inferred from the feature description:
+     - New feature/functionality → `feat`
+     - Bug fix → `fix`
+     - Tooling, deps, config → `chore`
+     - Code restructuring → `refactor`
+     - Documentation → `docs`
+     - Tests → `test`
+     - CI/CD → `ci`
+     - Performance → `perf`
+   - If absent or other value, fall back to branch numbering mode below.
+
+   **Branch numbering mode** (when branch_style is not "conventional"): Read `branch_numbering` value.
    - If `"timestamp"`, add `--timestamp` (Bash) or `-Timestamp` (PowerShell) to the script invocation
    - If `"sequential"` or absent, do not add any extra flag (default behavior)
 
-   - Bash example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --short-name "user-auth" "Add user authentication"`
-   - Bash (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --timestamp --short-name "user-auth" "Add user authentication"`
-   - PowerShell example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -ShortName "user-auth" "Add user authentication"`
-   - PowerShell (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -Timestamp -ShortName "user-auth" "Add user authentication"`
+   - Bash (conventional): `.specify/scripts/bash/create-new-feature.sh --json --type feat --short-name "user-auth" "Add user authentication"`
+   - Bash (sequential): `.specify/scripts/bash/create-new-feature.sh --json --short-name "user-auth" "Add user authentication"`
+   - Bash (timestamp): `.specify/scripts/bash/create-new-feature.sh --json --timestamp --short-name "user-auth" "Add user authentication"`
 
    **IMPORTANT**:
    - Do NOT pass `--number` — the script determines the correct next number automatically

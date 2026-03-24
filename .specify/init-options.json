@@ -3,6 +3,7 @@
   "ai_commands_dir": null,
   "ai_skills": false,
   "branch_numbering": "sequential",
+  "branch_style": "conventional",
   "here": true,
   "offline": false,
   "preset": null,
