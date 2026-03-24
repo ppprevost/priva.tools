@@ -1,7 +1,12 @@
-import { validateContactMessage } from '@/domain/validators';
-import { validationError, captchaError } from '@/domain/errors';
-import { verifyTurnstile } from '@/infra/turnstile';
-import { insertContact } from '@/infra/contact.repo';
+import { captchaError } from '@/domain/errors';
+import { createContactName, createContactEmail, createContactMsg } from '@/domain/values';
+import type { ContactRepo, CaptchaVerifier } from '@/domain/ports';
+import type { ContactSubmitted } from '@/domain/events';
+
+type Deps = {
+  contactRepo: ContactRepo;
+  captcha: CaptchaVerifier;
+};
 
 type SubmitContactInput = {
   name: string;
@@ -10,15 +15,16 @@ type SubmitContactInput = {
   turnstileToken?: string;
 };
 
-export async function submitContact(input: SubmitContactInput): Promise<void> {
-  if (!input.turnstileToken || !(await verifyTurnstile(input.turnstileToken))) {
+export async function submitContact(deps: Deps, input: SubmitContactInput): Promise<ContactSubmitted> {
+  if (!input.turnstileToken || !(await deps.captcha.verify(input.turnstileToken))) {
     throw captchaError();
   }
 
-  const validation = validateContactMessage(input.name, input.email, input.message);
-  if (!validation.valid) {
-    throw validationError(validation.error ?? 'Invalid input.');
-  }
+  const name = createContactName(input.name);
+  const email = createContactEmail(input.email);
+  const message = createContactMsg(input.message);
 
-  await insertContact(input.name.trim(), input.email.trim(), input.message.trim());
+  await deps.contactRepo.insert(name, email, message);
+
+  return { type: 'ContactSubmitted' };
 }

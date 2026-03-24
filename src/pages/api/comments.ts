@@ -3,6 +3,9 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { requireDatabaseUrl, requireAuth, isMobileClient, getClientIp, jsonResponse, handleUseCaseError } from '../../lib/api-helpers';
 import { submitComment } from '@/use-cases/submit-comment';
+import * as commentRepo from '@/infra/comment.repo';
+import * as captcha from '@/infra/turnstile';
+import * as ipHasher from '@/infra/hash';
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   const dbGuard = requireDatabaseUrl();
@@ -19,16 +22,19 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return jsonResponse({ error: 'Invalid rating.' }, 400);
     }
 
-    await submitComment({
-      toolSlug,
-      authorName,
-      content,
-      rating: rating ?? null,
-      turnstileToken,
-      website,
-      ip: getClientIp(clientAddress, request),
-      isMobile: isMobileClient(request),
-    });
+    await submitComment(
+      { commentRepo, captcha, ipHasher },
+      {
+        toolSlug,
+        authorName,
+        content,
+        rating: rating ?? null,
+        turnstileToken,
+        website,
+        ip: getClientIp(clientAddress, request),
+        isMobile: isMobileClient(request),
+      },
+    );
 
     return jsonResponse({ success: true }, 201);
   } catch (e) {

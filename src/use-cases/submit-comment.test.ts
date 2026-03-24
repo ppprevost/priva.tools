@@ -1,21 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { submitComment } from './submit-comment';
 
-vi.mock('@/infra/turnstile', () => ({
-  verifyTurnstile: vi.fn(),
-}));
-
-vi.mock('@/infra/hash', () => ({
-  hashIP: vi.fn().mockResolvedValue('abc123hash'),
-}));
-
-vi.mock('@/infra/comment.repo', () => ({
-  countRecentByIp: vi.fn(),
-  insertComment: vi.fn(),
-}));
-
-import { verifyTurnstile } from '@/infra/turnstile';
-import { countRecentByIp, insertComment } from '@/infra/comment.repo';
+const createDeps = () => ({
+  commentRepo: {
+    countRecentByIp: vi.fn().mockResolvedValue(0),
+    insert: vi.fn(),
+  },
+  captcha: { verify: vi.fn().mockResolvedValue(true) },
+  ipHasher: { hash: vi.fn().mockResolvedValue('abc123hash') },
+});
 
 const validInput = {
   toolSlug: 'compress-pdf',
@@ -26,76 +19,78 @@ const validInput = {
   isMobile: false,
 };
 
-beforeEach(() => {
-  vi.clearAllMocks();
-  vi.mocked(verifyTurnstile).mockResolvedValue(true);
-  vi.mocked(countRecentByIp).mockResolvedValue(0);
-});
-
 describe('submitComment', () => {
-  it('silently returns on honeypot trigger', async () => {
-    await submitComment({ ...validInput, website: 'spam.com' });
-    expect(insertComment).not.toHaveBeenCalled();
+  let deps: ReturnType<typeof createDeps>;
+
+  beforeEach(() => {
+    deps = createDeps();
+  });
+
+  it('returns null on honeypot trigger', async () => {
+    const result = await submitComment(deps, { ...validInput, website: 'spam.com' });
+    expect(result).toBeNull();
+    expect(deps.commentRepo.insert).not.toHaveBeenCalled();
   });
 
   it('throws ValidationError for invalid tool', async () => {
-    await expect(submitComment({ ...validInput, toolSlug: 'nonexistent' }))
+    await expect(submitComment(deps, { ...validInput, toolSlug: 'nonexistent' }))
       .rejects.toThrow('Invalid tool.');
   });
 
   it('throws ValidationError for short name', async () => {
-    await expect(submitComment({ ...validInput, authorName: 'AB' }))
+    await expect(submitComment(deps, { ...validInput, authorName: 'AB' }))
       .rejects.toThrow('Name');
   });
 
   it('throws ValidationError for short content', async () => {
-    await expect(submitComment({ ...validInput, content: 'Short' }))
+    await expect(submitComment(deps, { ...validInput, content: 'Short' }))
       .rejects.toThrow('Comment');
   });
 
   it('throws CaptchaError when turnstile fails', async () => {
-    vi.mocked(verifyTurnstile).mockResolvedValue(false);
-    await expect(submitComment(validInput))
+    deps.captcha.verify.mockResolvedValue(false);
+    await expect(submitComment(deps, validInput))
       .rejects.toThrow('Captcha verification failed.');
   });
 
   it('skips captcha for mobile clients', async () => {
-    vi.mocked(verifyTurnstile).mockResolvedValue(false);
-    await submitComment({ ...validInput, isMobile: true, turnstileToken: undefined });
-    expect(verifyTurnstile).not.toHaveBeenCalled();
-    expect(insertComment).toHaveBeenCalled();
+    deps.captcha.verify.mockResolvedValue(false);
+    await submitComment(deps, { ...validInput, isMobile: true, turnstileToken: undefined });
+    expect(deps.captcha.verify).not.toHaveBeenCalled();
+    expect(deps.commentRepo.insert).toHaveBeenCalled();
   });
 
   it('throws RateLimitError when too many comments', async () => {
-    vi.mocked(countRecentByIp).mockResolvedValue(3);
-    await expect(submitComment(validInput))
+    deps.commentRepo.countRecentByIp.mockResolvedValue(3);
+    await expect(submitComment(deps, validInput))
       .rejects.toThrow('Too many comments');
   });
 
-  it('inserts comment on success', async () => {
-    await submitComment(validInput);
-    expect(insertComment).toHaveBeenCalledWith(
+  it('inserts comment and returns event on success', async () => {
+    const event = await submitComment(deps, validInput);
+    expect(deps.commentRepo.insert).toHaveBeenCalledWith(
       'compress-pdf',
       'Alice',
       'This is a great tool for compressing!',
       'abc123hash',
-      undefined
+      null,
     );
+    expect(event).toEqual({ type: 'CommentSubmitted', toolSlug: 'compress-pdf', authorName: 'Alice' });
   });
 
-  it('passes rating to insertComment', async () => {
-    await submitComment({ ...validInput, rating: 4 });
-    expect(insertComment).toHaveBeenCalledWith(
+  it('passes rating to insert', async () => {
+    await submitComment(deps, { ...validInput, rating: 4 });
+    expect(deps.commentRepo.insert).toHaveBeenCalledWith(
       'compress-pdf',
       'Alice',
       'This is a great tool for compressing!',
       'abc123hash',
-      4
+      4,
     );
   });
 
   it('throws ValidationError for invalid rating', async () => {
-    await expect(submitComment({ ...validInput, rating: 6 }))
+    await expect(submitComment(deps, { ...validInput, rating: 6 }))
       .rejects.toThrow('Rating');
   });
 });
