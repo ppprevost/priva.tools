@@ -1,5 +1,6 @@
 export async function hash(ip: string): Promise<string> {
-  const secret = process.env.ADMIN_SECRET ?? 'default-hash-key';
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) throw new Error('ADMIN_SECRET is required for IP hashing.');
   const key = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(secret),

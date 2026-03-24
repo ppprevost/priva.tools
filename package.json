@@ -50,7 +50,7 @@
   "pnpm": {
     "overrides": {
       "svgo": "^4.0.1",
-      "h3": ">=1.15.6"
+      "h3": "^1.15.10"
     }
   },
   "devDependencies": {

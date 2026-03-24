@@ -11,7 +11,7 @@ export async function listAllComments(deps: Deps): Promise<Omit<Comment, 'ip_has
   return deps.commentRepo.getAll();
 }
 
-export async function approveComment(deps: Deps, id: number, approved: boolean): Promise<{ comment: Comment; event: CommentApproved }> {
+export async function approveComment(deps: Deps, id: number, approved: boolean): Promise<{ comment: Omit<Comment, 'ip_hash'>; event: CommentApproved }> {
   const comment = await deps.commentRepo.setApproval(id, approved);
   if (!comment) throw notFoundError('Comment not found.');
   return { comment, event: { type: 'CommentApproved', commentId: id, approved } };

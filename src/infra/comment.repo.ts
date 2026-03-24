@@ -35,12 +35,12 @@ export async function getAll(): Promise<Omit<Comment, 'ip_hash'>[]> {
   return rows as Omit<Comment, 'ip_hash'>[];
 }
 
-export async function setApproval(id: number, approved: boolean): Promise<Comment | null> {
+export async function setApproval(id: number, approved: boolean): Promise<Omit<Comment, 'ip_hash'> | null> {
   const rows = await sql`
     UPDATE comments SET approved = ${approved} WHERE id = ${id}
-    RETURNING id, tool_slug, author_name, content, ip_hash, approved, created_at, rating
+    RETURNING id, tool_slug, author_name, content, approved, created_at, rating
   `;
-  return (rows[0] as Comment) ?? null;
+  return (rows[0] as Omit<Comment, 'ip_hash'>) ?? null;
 }
 
 export async function remove(id: number): Promise<boolean> {

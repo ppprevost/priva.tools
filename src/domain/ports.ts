@@ -5,7 +5,7 @@ export type CommentRepo = {
   countRecentByIp: (ipHash: string) => Promise<number>;
   insert: (toolSlug: string, name: string, content: string, ipHash: string, rating?: number | null) => Promise<void>;
   getAll: () => Promise<Omit<Comment, 'ip_hash'>[]>;
-  setApproval: (id: number, approved: boolean) => Promise<Comment | null>;
+  setApproval: (id: number, approved: boolean) => Promise<Omit<Comment, 'ip_hash'> | null>;
   remove: (id: number) => Promise<boolean>;
 };
 
