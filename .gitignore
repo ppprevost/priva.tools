@@ -26,8 +26,13 @@ pnpm-debug.log*
 # remotion video project (private)
 video/
 
-# claude code
-.claude/
+# claude code (local only)
+.claude/settings.local.json
+.claude/.DS_Store
+
+# spec kit (vendor code, regenerable with `specify init`)
+.specify/scripts/
+.specify/templates/
 
 # playwright mcp artifacts
 .playwright-mcp/
