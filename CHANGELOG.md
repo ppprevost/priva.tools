@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.1](https://github.com/ppprevost/priva.tools/compare/v1.2.0...v1.2.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **security:** upgrade h3 to 1.15.10 via override (CVE-2026-33128) ([14dc03e](https://github.com/ppprevost/priva.tools/commit/14dc03ee9b4c6ce908d862d3e01e129232893dda))
+
+
+### Code Refactoring
+
+* pure clean architecture with DI, value objects and domain events ([#29](https://github.com/ppprevost/priva.tools/issues/29)) ([14dc03e](https://github.com/ppprevost/priva.tools/commit/14dc03ee9b4c6ce908d862d3e01e129232893dda))
+* fix 3 clean architecture violations ([#27](https://github.com/ppprevost/priva.tools/issues/27)) ([b9ce3c7](https://github.com/ppprevost/priva.tools/commit/b9ce3c71fb585b7e1893da54491310df92a880df))
+
+
+### Tests
+
+* coverage for createRateLimiter, requireAdmin, requireAuth, runWorker ([#28](https://github.com/ppprevost/priva.tools/issues/28)) ([7a390cf](https://github.com/ppprevost/priva.tools/commit/7a390cf89d8de2c27a9f582edeb3781640092c2f))
+
 ## [1.2.0](https://github.com/ppprevost/priva.tools/compare/v1.1.0...v1.2.0) (2026-03-11)
 
 
