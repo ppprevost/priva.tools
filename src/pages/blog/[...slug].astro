@@ -4,6 +4,7 @@ export const prerender = false;
 import { marked } from 'marked';
 import BlogLayout from '../../layouts/BlogLayout.astro';
 import { getPost } from '../../use-cases/get-blog-posts';
+import * as blogRepo from '../../infra/blog.repo';
 import { hasDatabaseUrl } from '../../lib/blog';
 
 if (!hasDatabaseUrl()) return Astro.redirect('/');
@@ -11,7 +12,7 @@ if (!hasDatabaseUrl()) return Astro.redirect('/');
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect('/blog');
 
-const post = await getPost(slug).catch(() => null);
+const post = await getPost({ blogRepo }, slug).catch(() => null);
 if (!post) return Astro.redirect('/blog');
 
 const htmlContent = await marked(post.content);

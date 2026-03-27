@@ -5,11 +5,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import { listPosts } from '../../use-cases/get-blog-posts';
+import * as blogRepo from '../../infra/blog.repo';
 import { hasDatabaseUrl } from '../../lib/blog';
 
 if (!hasDatabaseUrl()) return Astro.redirect('/');
 
-const posts = await listPosts();
+const posts = await listPosts({ blogRepo });
 
 const categoryLabels: Record<string, string> = {
   comparison: 'Comparisons',
