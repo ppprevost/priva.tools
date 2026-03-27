@@ -60,6 +60,7 @@ function parseFrontmatter(raw: string) {
   return {
     title: get('title'),
     description: get('description'),
+    date: get('date') || null,
     category: get('category'),
     ogImage: get('ogImage') || null,
     relatedTools,
@@ -73,8 +74,8 @@ console.log(`Found ${files.length} blog posts to migrate`);
 for (const file of files) {
   const slug = basename(file, '.md');
   const raw = readFileSync(join(blogDir, file), 'utf-8');
-  const { title, description, category, ogImage, relatedTools, content } = parseFrontmatter(raw);
-  const date = randomDate();
+  const { title, description, date: frontmatterDate, category, ogImage, relatedTools, content } = parseFrontmatter(raw);
+  const date = frontmatterDate || randomDate();
 
   await sql`
     INSERT INTO blog_posts (slug, title, description, content, date, category, related_tools, og_image)
