@@ -6,6 +6,7 @@ import {
   buildWebAppSchema,
   buildVideoSchema,
   buildArticleSchema,
+  buildHowToSchema,
 } from './schema';
 
 describe('buildFaqSchema', () => {
@@ -92,6 +93,21 @@ describe('buildVideoSchema', () => {
       contentUrl: 'https://example.com/video.mp4',
     });
     expect(schema.contentUrl).toBe('https://example.com/video.mp4');
+  });
+});
+
+describe('buildHowToSchema', () => {
+  it('builds HowTo schema with positioned steps', () => {
+    const schema = buildHowToSchema({
+      name: 'How to Compress a PDF',
+      steps: ['Upload your file.', 'Click compress.', 'Download the result.'],
+    });
+    expect(schema['@context']).toBe('https://schema.org');
+    expect(schema['@type']).toBe('HowTo');
+    expect(schema.name).toBe('How to Compress a PDF');
+    expect(schema.step).toHaveLength(3);
+    expect(schema.step[0]).toEqual({ '@type': 'HowToStep', position: 1, text: 'Upload your file.' });
+    expect(schema.step[2].position).toBe(3);
   });
 });
 

@@ -2,6 +2,7 @@
 import ToolLayout from '../layouts/ToolLayout.astro';
 import CropImage from '../components/tools/CropImage';
 import HowToSteps from '../components/ui/HowToSteps.astro';
+import FeatureGrid from '../components/ui/FeatureGrid.astro';
 
 const faqItems = [
   { question: 'Can I set an exact crop size in pixels?', answer: 'The crop tool uses a visual drag-to-select interface. The crop area is calculated in exact pixels based on the original image dimensions for precise results.' },
@@ -14,6 +15,12 @@ const howToSteps = [
   'Drag the crop handles to select the area you want to keep.',
   'Click "Crop Image" and download the cropped result.',
 ];
+
+const features = [
+  { title: 'Visual Precision', description: 'Drag-to-select cropping calculates exact pixel coordinates from the original image dimensions. No guesswork, no quality loss.' },
+  { title: '100% Private', description: 'Your image is cropped entirely in your browser. No server upload, no cloud processing. Works offline after the page loads.' },
+  { title: 'Lossless Output', description: 'Cropping removes outer pixels without re-encoding the kept area. The result preserves the original quality of your image.' },
+];
 ---
 
 <ToolLayout
@@ -23,10 +30,13 @@ const howToSteps = [
   relatedSlugs={['resize-image', 'compress-image', 'remove-background']}
   faqItems={faqItems}
   toolSlug="crop-image"
+  howToTitle="How to Crop an Image"
+  howToSteps={howToSteps}
 >
   <CropImage client:idle />
 
   <section class="mt-16 space-y-12 text-left" slot="seo-content">
     <HowToSteps title="How to Crop an Image" steps={howToSteps} />
+    <FeatureGrid title="Why Crop Images with Priva.TOOLS?" features={features} />
   </section>
 </ToolLayout>

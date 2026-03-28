@@ -83,6 +83,19 @@ export function buildWebAppSchema(input: { name: string; url: string; descriptio
   };
 }
 
+export function buildHowToSchema(input: { name: string; steps: string[] }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": input.name,
+    "step": input.steps.map((text, i) => ({
+      "@type": "HowToStep",
+      "position": i + 1,
+      "text": text,
+    })),
+  };
+}
+
 type VideoSchemaInput = {
   title: string;
   description: string;

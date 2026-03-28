@@ -2,6 +2,7 @@
 import ToolLayout from '../layouts/ToolLayout.astro';
 import JpgToPdf from '../components/tools/JpgToPdf';
 import HowToSteps from '../components/ui/HowToSteps.astro';
+import FeatureGrid from '../components/ui/FeatureGrid.astro';
 
 const faqItems = [
   { question: 'Which image formats are supported?', answer: 'JPG, JPEG, PNG, and WebP files can be converted to PDF.' },
@@ -14,6 +15,12 @@ const howToSteps = [
   'Click "Convert to PDF".',
   'Download your PDF with all images included.',
 ];
+
+const features = [
+  { title: '100% Private', description: 'Your images are converted locally in your browser. No server upload, no cloud processing, no data retention.' },
+  { title: 'Multiple Images', description: 'Combine several images into a single PDF document with one image per page. Supports JPG, PNG, and WebP.' },
+  { title: 'No Limits', description: 'Convert as many images as you want. No file count restrictions, no watermarks, no account required.' },
+];
 ---
 
 <ToolLayout
@@ -23,10 +30,13 @@ const howToSteps = [
   relatedSlugs={['compress-pdf', 'merge-pdf', 'compress-image']}
   faqItems={faqItems}
   toolSlug="jpg-to-pdf"
+  howToTitle="How to Convert Images to PDF"
+  howToSteps={howToSteps}
 >
   <JpgToPdf client:idle />
 
   <section class="mt-16 space-y-12 text-left" slot="seo-content">
     <HowToSteps title="How to Convert Images to PDF" steps={howToSteps} />
+    <FeatureGrid title="Why Convert Images to PDF with Priva.TOOLS?" features={features} />
   </section>
 </ToolLayout>

@@ -9,6 +9,7 @@ export type ToolConfig = {
   acceptedTypes: string;
   multiple: boolean;
   actionLabel: string;
+  ogImage?: string;
 };
 
 export const tools: Record<string, ToolConfig> = {
