@@ -14,7 +14,7 @@ const YOUTUBE_VIDEO_ID = 'XUsEyKTrIwU';
 const videoEmbedUrl = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}`;
 const videoSchema = buildVideoSchema({
   title: 'Priva.TOOLS - Free Online PDF & Image Tools | 100% Private',
-  description: 'Discover 10 free online tools to compress, merge, split PDFs and compress, resize, crop images. Everything runs in your browser with WebAssembly. Your files never leave your device.',
+  description: 'Discover 13 free online tools to compress, merge, split, sign and edit PDFs, compress, resize, crop images and remove backgrounds. Everything runs in your browser with WebAssembly. Your files never leave your device.',
   thumbnailUrl: 'https://priva.tools/og-default.jpg',
   uploadDate: '2026-03-03',
   duration: 'PT1M15S',
@@ -23,9 +23,10 @@ const videoSchema = buildVideoSchema({
 const orgSchema = buildOrganizationSchema();
 ---
 
-<BaseLayout title="Priva.TOOLS - Free Online PDF & Image Tools | 100% Private" description="Free online PDF and image tools. Compress, merge, split PDFs. Compress, resize, crop images. Remove backgrounds with AI. Everything runs in your browser, your files never leave your device." ogVideo={videoEmbedUrl}>
+<BaseLayout title="Free Online PDF & Image Tools | 100% Private - Priva.TOOLS" description="Free online PDF and image tools. Compress, merge, split PDFs. Compress, resize, crop images. Remove backgrounds with AI. Everything runs in your browser, your files never leave your device." ogVideo={videoEmbedUrl}>
   <Header />
 
+  <main id="main-content">
   <section class="relative min-h-[85vh] w-full overflow-hidden">
     <div class="absolute inset-0 z-0">
       <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10"></div>
@@ -132,6 +133,7 @@ const orgSchema = buildOrganizationSchema();
       ></iframe>
     </div>
   </section>
+  </main>
 
   <Footer />
   <script type="application/ld+json" set:html={JSON.stringify({
@@ -140,11 +142,6 @@ const orgSchema = buildOrganizationSchema();
     "name": "Priva.TOOLS",
     "url": "https://priva.tools",
     "description": "Free online PDF and image tools with 100% client-side processing. Your files never leave your browser.",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://priva.tools/?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
   })} />
   <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(videoSchema)} />

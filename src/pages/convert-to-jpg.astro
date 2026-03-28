@@ -2,6 +2,7 @@
 import ToolLayout from '../layouts/ToolLayout.astro';
 import ConvertToJpg from '../components/tools/ConvertToJpg';
 import HowToSteps from '../components/ui/HowToSteps.astro';
+import FeatureGrid from '../components/ui/FeatureGrid.astro';
 
 const faqItems = [
   { question: 'Why convert to JPG?', answer: 'JPG is the most widely supported image format. It works everywhere: email attachments, web uploads, printing services, and social media platforms.' },
@@ -14,6 +15,12 @@ const howToSteps = [
   'Adjust the JPG quality slider if needed.',
   'Click "Convert to JPG" and download the result.',
 ];
+
+const features = [
+  { title: 'Universal Compatibility', description: 'JPG is supported everywhere: email, social media, printing services, and every device. Convert once, use anywhere.' },
+  { title: 'HEIC Support', description: 'Convert iPhone photos (HEIC/HEIF) to JPG for universal compatibility. No more "unsupported format" errors.' },
+  { title: 'Adjustable Quality', description: 'Control the output quality with a slider. Find the right balance between file size and visual fidelity before downloading.' },
+];
 ---
 
 <ToolLayout
@@ -23,10 +30,13 @@ const howToSteps = [
   relatedSlugs={['compress-image', 'resize-image', 'jpg-to-pdf']}
   faqItems={faqItems}
   toolSlug="convert-to-jpg"
+  howToTitle="How to Convert Images to JPG"
+  howToSteps={howToSteps}
 >
   <ConvertToJpg client:idle />
 
   <section class="mt-16 space-y-12 text-left" slot="seo-content">
     <HowToSteps title="How to Convert Images to JPG" steps={howToSteps} />
+    <FeatureGrid title="Why Convert to JPG with Priva.TOOLS?" features={features} />
   </section>
 </ToolLayout>

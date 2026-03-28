@@ -2,6 +2,7 @@
 import ToolLayout from '../layouts/ToolLayout.astro';
 import ResizeImage from '../components/tools/ResizeImage';
 import HowToSteps from '../components/ui/HowToSteps.astro';
+import FeatureGrid from '../components/ui/FeatureGrid.astro';
 
 const faqItems = [
   { question: 'Can I resize without losing quality?', answer: 'Downscaling (making smaller) preserves quality well. Upscaling (making larger) may introduce some blurriness since new pixels must be interpolated.' },
@@ -15,6 +16,12 @@ const howToSteps = [
   'Toggle "Maintain aspect ratio" to prevent distortion.',
   'Click "Resize Image" and download the result.',
 ];
+
+const features = [
+  { title: 'Pixel-Perfect Control', description: 'Set exact width and height in pixels. The aspect ratio lock prevents accidental distortion when resizing.' },
+  { title: '100% Private', description: 'Your image is resized entirely in your browser. No upload, no cloud processing. Works offline after the page loads.' },
+  { title: 'All Formats', description: 'Supports JPG, PNG, and WebP. The output format matches your input file for maximum compatibility.' },
+];
 ---
 
 <ToolLayout
@@ -24,10 +31,13 @@ const howToSteps = [
   relatedSlugs={['compress-image', 'crop-image', 'convert-to-jpg']}
   faqItems={faqItems}
   toolSlug="resize-image"
+  howToTitle="How to Resize an Image"
+  howToSteps={howToSteps}
 >
   <ResizeImage client:idle />
 
   <section class="mt-16 space-y-12 text-left" slot="seo-content">
     <HowToSteps title="How to Resize an Image" steps={howToSteps} />
+    <FeatureGrid title="Why Resize Images with Priva.TOOLS?" features={features} />
   </section>
 </ToolLayout>

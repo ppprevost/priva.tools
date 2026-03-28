@@ -2,9 +2,10 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import ToolCard from '../components/ui/ToolCard';
 import { tools } from '../lib/tools-config';
-import { buildArticleSchema } from '../lib/schema';
+import { buildArticleSchema, buildBreadcrumbSchema } from '../lib/schema';
 
 type Props = {
   title: string;
@@ -24,15 +25,26 @@ const articleSchema = buildArticleSchema({
   datePublished: date,
 });
 
+const breadcrumbItems = [
+  { name: 'Home', url: 'https://priva.tools/' },
+  { name: 'Blog', url: 'https://priva.tools/blog' },
+  { name: title, url: canonicalURL.href },
+];
+const breadcrumbSchema = buildBreadcrumbSchema(breadcrumbItems);
+
 const relatedTools = relatedSlugs.map((s) => tools[s]).filter(Boolean);
 ---
 
 <BaseLayout title={`${title} | Priva.TOOLS Blog`} description={description} ogImage={ogImage}>
   <Header />
-  <main class="max-w-3xl mx-auto px-6 py-12 md:py-20">
+  <main id="main-content" class="max-w-3xl mx-auto px-6 py-12 md:py-20">
+    <Breadcrumbs items={[
+      { label: 'Home', href: '/' },
+      { label: 'Blog', href: '/blog' },
+      { label: title },
+    ]} />
     <article>
       <header class="mb-10">
-        <a href="/blog" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors mb-4 inline-block">&larr; Back to Blog</a>
         <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">{title}</h1>
         <p class="text-slate-500 mt-3">{description}</p>
         <time datetime={date} class="text-sm text-slate-400 mt-2 block">{new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
@@ -56,4 +68,5 @@ const relatedTools = relatedSlugs.map((s) => tools[s]).filter(Boolean);
   </main>
   <Footer />
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 </BaseLayout>
