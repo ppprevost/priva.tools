@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/ppprevost/priva.tools/compare/v1.2.1...v1.3.0) (2026-03-28)
+
+
+### Features
+
+* add 10 blog articles + fix blog pages DI ([#32](https://github.com/ppprevost/priva.tools/issues/32)) ([61c20c1](https://github.com/ppprevost/priva.tools/commit/61c20c1ef5ab7e4f28b67425cb5d5283fbc84c4b))
+
+
+### Bug Fixes
+
+* **seo:** comprehensive SEO audit fixes ([#34](https://github.com/ppprevost/priva.tools/issues/34)) ([3af4e18](https://github.com/ppprevost/priva.tools/commit/3af4e18c2088eaeb3762f75549dd0a24ae392831))
+
 ## [1.2.1](https://github.com/ppprevost/priva.tools/compare/v1.2.0...v1.2.1) (2026-03-25)
 
 
